@@ -42,4 +42,4 @@ def detect_document(path):
     #print(lines)
 
 
-detect_document(r"C:\Users\Dray\Downloads\Test_with_different_sizes_crap.jpg")
+detect_document(r"rent payment.png")
