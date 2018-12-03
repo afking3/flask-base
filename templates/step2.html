@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link href="../static/main.css" type="text/css" rel="stylesheet" />
+  <meta charset="UTF-8">
+  <script src="../static/scripts/jquery-3.3.1.min.js"></script>
+  <script src="../static/scripts/editfield.js" type="text/javascript"></script>
+    <script src="../static/scripts/fullpreview.js"></script>
+  <title>Re-entry Tool</title>
+<body>
+  <div class="modal hidden">
+    <iframe class="modalcontent" src="../static/images/placeholderfile.pdf"></iframe>
+    <h1 class="titleleft">
+      Click anywhere to exit
+    <h1>
+  </div>
+  <nav>
+    <img id="navlogo" src="../static/images/nlslalogo.png">
+  </nav>
+  <h1 class="titleleft">
+    Step 2: Review Text
+  <h1>
+  <p class="paragraphleft">From your file, we extracted the following information. Please correct any inaccurate fields if necessary.
+  </p>
+  <div class="step2icons paragraphleft">
+    <p class="key"><img class="icon" src="../static/images/cautionicon.png">Fields with this icon next to them may especially require correction.</p>
+    <p class="key"><img class="icon" src="../static/images/popupicon.png">Click the pop-up icon to view the text as it appears in your file.</p>
+    <p class="key"><img class="icon" src="../static/images/editicon.png">Click the pen icon to manually edit the field</p>
+  </div>
+  <table>
+    <tr>
+      <th>CRIME NAME</th>
+      <th>LOCATION</th>
+      <th>DATE</th>
+      <th>View</th>
+      <th>Edit</th>
+    </tr>
+    <tr>
+      <td><div class="clickedit" contenteditable="false">data</div></td>
+      <td><div class="clickedit" contenteditable="false">data</div></td>
+      <td><div class="clickedit" contenteditable="false">data</div></td>
+      <td><img class="view iconbutton" src="../static/images/popupicon.png"></td>
+      <td>
+          <img class="edit iconbutton" src="../static/images/editicon.png"></td>
+    </tr>
+    <tr>
+      <td>data</td>
+      <td>data</td>
+      <td>data</td>
+      <td><img class="view iconbutton" src="../static/images/popupicon.png"></td>
+      <td><img class="edit iconbutton" src="../static/images/editicon.png"></td>
+    </tr>
+    <tr>
+      <td>data</td>
+      <td>data</td>
+      <td>data</td>
+      <td><img class="view iconbutton" src="../static/images/popupicon.png"></td>
+      <td><img class="edit iconbutton" src="../static/images/editicon.png"></td>
+    </tr>
+    <tr>
+      <td>data</td>
+      <td>data</td>
+      <td>data</td>
+      <td><img class="view iconbutton" src="../static/images/popupicon.png"></td>
+      <td><img class="edit iconbutton" src="../static/images/editicon.png"></td>
+    </tr>
+  </table>
+  <div>
+</body>
+</html>

@@ -35,6 +35,22 @@ nav {
   font-size: 16px;
 }
 
+.titleleft {
+  color: rgb(54, 54, 54);
+  margin-top: 50px;
+  max-width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.paragraphleft {
+  color: rgb(54, 54, 54);
+  max-width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 16px;
+}
+
 #buttons {
   margin-left: auto;
   margin-right: auto;
@@ -48,4 +64,90 @@ nav {
   background-color: #384861;
   padding: 20px;
   margin-top: 20px;
+}
+
+a {
+  color: white;
+  text-decoration: none;
+}
+
+.step2icons {
+  display: flex;
+}
+
+.icon{
+  width: 14px;
+  margin-right: 10px;
+}
+
+.iconbutton{
+  width: 14px;
+  display: block;
+  margin: auto;
+}
+
+.key {
+  margin: 10px;
+  width: 30%;
+}
+
+table {
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 40px;
+  font-size: 16px;
+}
+
+th {
+  text-align: left;
+  padding: 10px;
+  background-color: #384861;
+  color: white;
+}
+
+td {
+  padding: 5px;
+  background-color: rgb(235, 235, 235);
+}
+
+.editing {
+  background-color: white;
+  padding: 5px;
+}
+
+.modal{
+  position: fixed;
+  z-index:1;
+  left: 0;
+  top:0;
+  width:100%;
+  height: 100%;
+  overflow:auto;
+  background-color:rgba(0,0,0,0.4);
+}
+
+.modalcontent {
+  background-color: #fefefe;
+  margin: 5%;
+  padding: 20px;
+  width: 70%;
+  height: 500px;
+  display: block;
+  margin: 20px auto;
+}
+
+#close {
+  z-index:1;
+  color: white;
+  text-align: right;
+  color: rgb(54, 54, 54);
+  max-width: 70%;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 16px;
+}
+
+.hidden {
+  display: none;
 }
