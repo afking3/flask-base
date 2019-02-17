@@ -9,6 +9,12 @@ dummy_input = {
     }]
 }
 
+"Returns boolean of if crime is AB 109 eligible"
+def isAB109Elig(crime):
+    return True
+
+
+
 """
     RuleSetNode{
         id: a unique integer identifier for each edge
@@ -34,7 +40,7 @@ class RuleSetNode:
 """
 class RuleSetEdge:
     def __init__(self, id, start_node, end_node, condition = (lambda _: True)):
-        self.id = id;
+        self.id = id
         self.start_node = start_node
         self.end_node = end_node
         self.condition = condition
@@ -49,7 +55,7 @@ class RuleSet:
     {
         crimes: [{
             crime_type: [Felony, Misdemeanor, Infraction],
-            result: [Prison, Probation, County Jail, Fine],
+            result: [Prison, Probation, County Jail, Fine, N/A, Dispo],
             conviction_date: [date],
             offense: [etc],
             offense_code: [some type],
@@ -70,8 +76,9 @@ class RuleSet:
     def __init__(self):
         #create the graph here
         #(nodes, edges) = self.createGraph();
-        self.nodes = self.createGraph()
+        #self.nodes = self.createGraph()
         #self.edges = edges;
+        self.createGraph()
 
     """
     Returns a generator that each time returns a unique int, starting from 0
@@ -83,16 +90,34 @@ class RuleSet:
             yield temp
             temp += 1
 
+    def isAB109Elig(self, crime):
+        return True
+
+    def step(self, json, node):
+        for edge in node.out_edges:
+            if edge.condition(json):
+                return edge.end_node
+        return None
+
+    def evaluate(self, json):
+        current_node = self.start_node
+        while(current_node != None and current_node.out_edges != []):
+            current_node = self.step(json, current_node)
+        return current_node
+
     """
-    Returns the graph of the ruleset
+    Sets the start node of the graph, and connects all nodes of the graph together
     """
     def createGraph(self):
-        nodes = []
-        edges = []
+        # nodes = []
+        #edges = []
 
         node_counter = self.getUniqueId()
         edge_counter = self.getUniqueId()
 
+        start_node = RuleSetNode(next(node_counter), "Start")
+        self.start_node = start_node
+    
         prison = RuleSetNode(next(node_counter), "Prison")
         prop_47_64_elig = RuleSetNode(next(node_counter), "Prop 47 Eligible")
         not_prop_47_64_elig = RuleSetNode(next(node_counter), "Not Prop 47 Eligible")
@@ -139,18 +164,6 @@ class RuleSet:
         prison_eligible_path = RuleSetEdge(next(edge_counter), prison, prop_47_64_elig, condition = (lamdba (crime.offense_code in prop47codes)))
         prison_not_eligible_path = RuleSetEdge(next(edge_counter), prison, not_prop_47_64_elig, condition = (lamdba (crime.offense_code not in prop47codes)))
         
+        go_to_1203_pointa_path = RuleSetEdge(next(edge_counter), file_cr180_misdemeanor, code_1203_point4a, condition = (lambda crime: True))
 
-
-
-
-
-        nodes.append(prison, prop_47_64_elig, not_prop_47_64_elig)
-        edges.append(prison_eligible_path, prison_not_eligible_path)
-
-
-
-        return (nodes, edges)
-        return nodes
-
-    def evaluate(self, json):
-        pass
+        not_ab109_eligible_path = RuleSetEdge(next(edge_counter), not_prop_47_64_elig, not_ab_109_eligible, condition= (lambda crime: isAB109Elig(crime)))
