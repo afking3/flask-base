@@ -160,10 +160,11 @@ class RuleSet:
 
         fine = RuleSetNode(next(node_counter), "Fine")
 
-
-        prison_eligible_path = RuleSetEdge(next(edge_counter), prison, prop_47_64_elig, condition = (lamdba (crime.offense_code in prop47codes)))
-        prison_not_eligible_path = RuleSetEdge(next(edge_counter), prison, not_prop_47_64_elig, condition = (lamdba (crime.offense_code not in prop47codes)))
+        # (lamdba crime: crime.offense_code in prop47codes)
+        #(amdba crime: crime.offense_code not in prop47codes)
+        prison_eligible_path = RuleSetEdge(next(edge_counter), prison, prop_47_64_elig, lambda crime: crime.offense_code in prop47codes)
+        prison_not_eligible_path = RuleSetEdge(next(edge_counter), prison, not_prop_47_64_elig, lambda crime: crime.offense_code not in prop47codes)
         
-        go_to_1203_pointa_path = RuleSetEdge(next(edge_counter), file_cr180_misdemeanor, code_1203_point4a, condition = (lambda crime: True))
+        go_to_1203_pointa_path = RuleSetEdge(next(edge_counter), file_cr180_misdemeanor, code_1203_point4a, lambda crime: True)
 
-        not_ab109_eligible_path = RuleSetEdge(next(edge_counter), not_prop_47_64_elig, not_ab_109_eligible, condition= (lambda crime: isAB109Elig(crime)))
+        not_ab109_eligible_path = RuleSetEdge(next(edge_counter), not_prop_47_64_elig, not_ab_109_eligible, lambda crime: isAB109Elig(crime))
