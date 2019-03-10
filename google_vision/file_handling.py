@@ -1,6 +1,7 @@
 import io
 import os
 import pdf2image
+from io import BytesIO
 from PIL import Image
 
 """
@@ -22,8 +23,7 @@ def _open_pdf(filename):
     return imgs
 
 """
-Return the raw bytestream from filename, compressed for sending
-to Google Vision.
+Return a list of byte arrays (each for one picture) corresponding to filename.
 """
 def open_file(filename):
     name, ext = os.path.splitext(filename)
@@ -35,6 +35,11 @@ def open_file(filename):
     else:
         return IOError("Not a valid image file.")
     #TODO: Compression. Should only do if image is too large to send
-    return imgs
+    outputs = []
+    for img in imgs:
+        output = BytesIO()
+        img.save(output, 'JPEG')
+        outputs.append(output)
 
+    return outputs
     
