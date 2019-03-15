@@ -71,7 +71,7 @@ def detect_document():
 
                     if prev_line is not None and ('ARR/DET/CITE:' in prev_line or "COURT" in prev_line):
                         if lastDate is not None:
-                            Courts[str(court_count)]={"Date":lastDate ,"Crimes":Crimes}
+                            Courts[str(court_count)]={"Date":lastDate ,"Crimes":removeDupCrimes(Crimes)}
                             Crimes={}
                             crime_count=0
                             court_count+=1
@@ -105,7 +105,6 @@ def detect_document():
                             if 'DISPO' in para:
                                 crime=Crimes[str(crime_count)]
                                 crime["DISPO"]=para.split("DISPO:",1)[1]
-                        #TODO: Add sentencing and conviction
 
                         #TODO: Refactor this
                         if 'PC' in para:
@@ -152,19 +151,27 @@ def detect_document():
 
 
 
-                        
+                     
 
                     
     info['Courts']=Courts
-    # print(paragraphs)
+    print(paragraphs)
     info=json.dumps(info)
     parsed = json.loads(info)
-    print(json.dumps(parsed, indent=4, sort_keys=True))
+    # print(json.dumps(parsed, indent=4, sort_keys=True))
     # print(info)
     return info
     #print(lines)
 
+def removeDupCrimes (Crimes): 
+    newCrimes={}
 
+    for key,value in Crimes.items():
+        if value["Type"]!="":
+            if value not in newCrimes.values():
+                newCrimes[key] = value
+
+    return newCrimes
 
 def getDate(dateString):
     numCount=0
