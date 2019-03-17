@@ -1,6 +1,7 @@
 import io
 import os
 import json
+from rapsheet import Rapsheet
 
 from google.oauth2 import service_account
 from google.cloud import vision
@@ -9,6 +10,36 @@ from google.cloud import vision
 CREDENTIALS = service_account.Credentials.from_service_account_file('NLSLA Re-entry-88f1acf99097.json')
 
 CLIENT = vision.ImageAnnotatorClient(credentials=CREDENTIALS)
+
+"""
+Outputs the response from google vision as a list of lines.
+"""
+def get_lines(response):
+    breaks = vision.enums.TextAnnotation.DetectedBreak.BreakType
+    lines = []
+    for page in response.full_text_annotation.pages:
+        for block in page.blocks:
+            for paragraph in block.paragraphs:
+                para = ""
+                line = ""
+                for word in paragraph.words:
+                    for symbol in word.symbols:
+                        line += symbol.text
+                        if symbol.property.detected_break.type == breaks.SPACE:
+                            line += ' '
+                        if symbol.property.detected_break.type == breaks.EOL_SURE_SPACE:
+                            line += ' '
+                            lines.append(line)
+                            para += line
+                            line = ''
+                        if symbol.property.detected_break.type == breaks.LINE_BREAK:
+                            lines.append(line)
+                            para += line
+                            line = ''
+                lines.append(para)
+    return lines
+
+
 
 
 def detect_document():
@@ -20,6 +51,9 @@ def detect_document():
     court_count=0
     crime_count=0
     lastDate=None
+
+    rapsheet = Rapsheet()
+
     #[pastNameAndDOB] signifies whether the name and
     #date of birth have been found yet
     pastNameAndDOB=False
@@ -28,7 +62,6 @@ def detect_document():
     for pageCount, path in enumerate(os.listdir("images")):
         """Detects document features in an image."""
         
-
         with io.open(path, 'rb') as image_file:
             content = image_file.read()
 
@@ -72,7 +105,7 @@ def detect_document():
 
                     #Check line for convict's name
                     if 'NAM/001' in para:
-                        info['Name']=para.split("NAM/001",1)[1]
+                        rapsheet.set_name(para.split("NAM/001",1)[1])
 
                     if prev_line is not None and ('ARR/DET/CITE:' in prev_line or "COURT" in prev_line):
                         if lastDate is not None:
