@@ -39,7 +39,9 @@ def get_lines(response):
                 lines.append(para)
     return lines
 
-
+def get_response(image):
+    img = vision.types.Image(content=image)
+    return CLIENT.document_text_detection(image=img)
 
 
 def detect_document():
