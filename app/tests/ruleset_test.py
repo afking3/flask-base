@@ -2,13 +2,19 @@ import sys
 sys.path.insert(0, '../')
 import ruleset
 import datetime
+from dateutil.relativedelta import relativedelta
 
 now = datetime.datetime.now()
 week_ago = now - datetime.timedelta(days=7)
-one_year_ago = now - datetime.timedelta(years=1)
-two_years_ago = now - datetime.timedelta(years=2)
+one_year_ago = now - relativedelta(years=1)
+two_years_ago = now - relativedelta(years=2)
 
 r = ruleset.RuleSet()
+
+def assertResult(given, expected_messages, expected_result):
+    result = r.result(given)
+    assert result["messages"] == [] 
+    assert result["result"] == "Discretionary"
 
 def test_e():
     print("hi")
@@ -25,10 +31,7 @@ def test_infraction_not_eligible():
                 "probation_status": None
             }]
         }
-
-    result = r.result(given)
-    assert result.messages == [] 
-    assert result.res == "Not Eligible"
+    assertResult(given, [], "Not Eligible")
 
 def test_infraction_mandatory():
     given = {"crimes": 
@@ -44,7 +47,7 @@ def test_infraction_mandatory():
 
     result = r.result(given)
     assert result.messages == []
-    assert result.res == "Mandatory"
+    assert result.result == "Mandatory"
 
 def test_infraction_discretionary():
     given = {"crimes": 
@@ -67,7 +70,7 @@ def test_infraction_discretionary():
 
     result = r.result(given)
     assert result.messages == [] 
-    assert result.res == "Discretionary"
+    assert result.result == "Discretionary"
 
 
 def test_misdemeanor_discretionary():
@@ -91,7 +94,7 @@ def test_misdemeanor_discretionary():
 
     result = r.result(given)
     assert result.messages == [] 
-    assert result.res == "Discretionary"
+    assert result.result == "Discretionary"
 
 
 def test_misdemeanor_mandatory():
@@ -108,7 +111,7 @@ def test_misdemeanor_mandatory():
 
     result = r.result(given)
     assert result.messages == []
-    assert result.res == "Mandatory"
+    assert result.result == "Mandatory"
 
 def test_misdemeanor_not_eligible():
     given = {"crimes": 
@@ -124,7 +127,7 @@ def test_misdemeanor_not_eligible():
 
     result = r.result(given)
     assert result.messages == [] 
-    assert result.res == "Not Eligible"
+    assert result.result == "Not Eligible"
 
 
 def test_misdemeanor_mandatory2():
@@ -141,7 +144,7 @@ def test_misdemeanor_mandatory2():
 
     result = r.result(given)
     assert result.messages == [] 
-    assert result.res == "Mandatory"
+    assert result.result == "Mandatory"
 
 def test_misdemeanor_mandatory3():
     given = {"crimes": 
@@ -157,7 +160,7 @@ def test_misdemeanor_mandatory3():
 
     result = r.result(given)
     assert result.messages == [] 
-    assert result.res == "Mandatory"
+    assert result.result == "Mandatory"
 
 def test_misdemeanor_mandatory4():
     given = {"crimes": [{
@@ -171,7 +174,7 @@ def test_misdemeanor_mandatory4():
 
     result = r.result(given)
     assert result.messages == [] 
-    assert result.res == "Discretionary"
+    assert result.result == "Discretionary"
 
 def test_felony_mandatory2():
     given = {"crimes": 
@@ -187,7 +190,7 @@ def test_felony_mandatory2():
 
     result = r.result(given)
     assert result.messages == [] 
-    assert result.res == "Mandatory"
+    assert result.result == "Mandatory"
 
 def test_felony_mandatory3():
     given = {"crimes": 
@@ -203,7 +206,7 @@ def test_felony_mandatory3():
 
     result = r.result(given)
     assert result.messages == [] 
-    assert result.res == "Mandatory"
+    assert result.result == "Mandatory"
 
 def test_felony_discr():
     given = {"crimes": 
@@ -219,7 +222,7 @@ def test_felony_discr():
 
     result = r.result(given)
     assert result.messages == [] 
-    assert result.res == "Discretionary"
+    assert result.result == "Discretionary"
 
 def test_felony_county_discr():
     given = {"crimes": 
@@ -234,5 +237,6 @@ def test_felony_county_discr():
         }
 
     result = r.result(given)
-    assert result.messages == [] 
-    assert result.res == "Discretionary"
+    print(result)
+    assert result["messages"] == [] 
+    assert result["result"] == "Discretionary"
