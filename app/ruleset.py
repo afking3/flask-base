@@ -93,7 +93,21 @@ class RuleSet:
             yield temp
             temp += 1
 
-    def isAB109Elig(self, crime):
+    def isAB109Elig(crime):
+        return True
+
+
+
+    def isProbationCompletion(crime):
+        True
+
+    def isEarlyTermination(crime):
+        return True
+
+    def yearsSinceConvictionDate(crime):
+        return 0
+
+    def isConvicted(crime):
         return True
 
     def step(self, json, node):
@@ -157,7 +171,7 @@ class RuleSet:
         # #(amdba crime: crime.offense_code not in prop47codes)
         # prison_eligible_path = RuleSetEdge(next(edge_counter), prison, prop_47_64_elig, lambda crime: crime.offense_code in prop47codes)
         # prison_not_eligible_path = RuleSetEdge(next(edge_counter), prison, not_prop_47_64_elig, lambda crime: crime.offense_code not in prop47codes)
-        
+
         # go_to_1203_pointa_path = RuleSetEdge(next(edge_counter), file_cr180_misdemeanor, code_1203_point4a, lambda crime: True)
 
         # not_ab109_eligible_path = RuleSetEdge(next(edge_counter), not_prop_47_64_elig, not_ab_109_eligible, lambda crime: isAB109Elig(crime))
