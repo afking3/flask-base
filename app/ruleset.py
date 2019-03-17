@@ -13,8 +13,27 @@ dummy_input = {
 def isAB109Elig(crime):
     return True
 
+def isPrison(crime):
+    return True
 
+def isCountyJail(crime):
+    return True
 
+def isProbation(crime):
+    return True
+
+def isUpTo1year(crime):
+    return True
+
+def isFelony(crime):
+    return True
+
+def isMisdemeanor(crime):
+    return True
+
+def isSupervision(crime):
+    return True
+    
 """
     RuleSetNode{
         id: a unique integer identifier for each edge
@@ -81,7 +100,12 @@ class RuleSet:
         self.createGraph()
 
     def result(self, json):
-        pass
+        end_node, messages = self.evaluate(json)
+        result = {
+            "result": end_node.name, 
+            "messages": messages
+        }
+        return result
 
     """
     Returns a generator that each time returns a unique int, starting from 0
@@ -97,16 +121,18 @@ class RuleSet:
         return True
 
     def step(self, json, node):
-        for edge in node.out_edges:
-            if edge.condition(json):
-                return edge.end_node
+        for (dest, predicate) in graph[node]:
+            if predicate(json):
+                return dest
         return None
 
     def evaluate(self, json, messages = []):
         current_node = self.start_node
-        while(current_node != None and current_node.out_edges != []):
+        while(current_node != None and len(graph[current_node]) > 0):
             current_node = self.step(json, current_node)
-        return current_node
+            if(current_node != None and current_node.message):
+                messages.append(current_node.message)
+        return (current_node, messages)
 
     """
     Sets the start node of the graph, and connects all nodes of the graph together
@@ -225,7 +251,7 @@ class RuleSet:
         graph[probation_early_termination] = []
         graph[probation_discretionary] = []
 
-        graph[up_to_1_year] = [(code_1203_point4a lambda x: True)]
+        graph[up_to_1_year] = [(code_1203_point4a, lambda x: True)]
 
         graph[code_1203_point4a] = [
         (one_year_from_conviction_date, lambda x: yearsSinceConvictionDate(x) <= 1),

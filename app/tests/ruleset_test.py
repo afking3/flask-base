@@ -15,8 +15,7 @@ def test_e():
     assert ruleset.dummy_input != None
 
 def test_infraction_not_eligible():
-    given = 
-        {"crimes": 
+    given = {"crimes": 
             [{
                 "crime_type": "Infraction",
                 "result": "Fine",
@@ -32,8 +31,7 @@ def test_infraction_not_eligible():
     assert result.res == "Not Eligible"
 
 def test_infraction_mandatory():
-    given = 
-        {"crimes": 
+    given = {"crimes": 
             [{
                 "crime_type": "Infraction",
                 "result": "Fine",
@@ -49,8 +47,7 @@ def test_infraction_mandatory():
     assert result.res == "Mandatory"
 
 def test_infraction_discretionary():
-    given = 
-        {"crimes": 
+    given = {"crimes": 
             [{
                 "crime_type": "Infraction",
                 "result": "Fine",
@@ -74,8 +71,7 @@ def test_infraction_discretionary():
 
 
 def test_misdemeanor_discretionary():
-    given = 
-        {"crimes": 
+    given = {"crimes": 
             [{
                 "crime_type": "Misdemeanor",
                 "result": "Up To A Year In County Jail",
@@ -99,8 +95,7 @@ def test_misdemeanor_discretionary():
 
 
 def test_misdemeanor_mandatory():
-    given = 
-        {"crimes": 
+    given = {"crimes": 
             [{
                 "crime_type": "Misdemeanor",
                 "result": "Up To A Year In County Jail",
@@ -116,8 +111,7 @@ def test_misdemeanor_mandatory():
     assert result.res == "Mandatory"
 
 def test_misdemeanor_not_eligible():
-    given = 
-        {"crimes": 
+    given = {"crimes": 
             [{
                 "crime_type": "Misdemeanor",
                 "result": "Up To A Year In County Jail",
@@ -134,8 +128,7 @@ def test_misdemeanor_not_eligible():
 
 
 def test_misdemeanor_mandatory2():
-    given = 
-        {"crimes": 
+    given = {"crimes": 
             [{
                 "crime_type": "Misdemeanor",
                 "result": "Probation",
@@ -151,8 +144,7 @@ def test_misdemeanor_mandatory2():
     assert result.res == "Mandatory"
 
 def test_misdemeanor_mandatory3():
-    given = 
-        {"crimes": 
+    given = {"crimes": 
             [{
                 "crime_type": "Misdemeanor",
                 "result": "Probation",
@@ -168,25 +160,21 @@ def test_misdemeanor_mandatory3():
     assert result.res == "Mandatory"
 
 def test_misdemeanor_mandatory4():
-    given = 
-        {"crimes": 
-            [{
+    given = {"crimes": [{
                 "crime_type": "Misdemeanor",
                 "result": "Probation",
                 "conviction_date": week_ago,
                 "offense": None,
                 "offense_code": None,
                 "probation_status": "Not Completed"
-            }]
-        }
+            }]}
 
     result = r.result(given)
     assert result.messages == [] 
     assert result.res == "Discretionary"
 
 def test_felony_mandatory2():
-    given = 
-        {"crimes": 
+    given = {"crimes": 
             [{
                 "crime_type": "Felony",
                 "result": "Probation",
@@ -202,8 +190,7 @@ def test_felony_mandatory2():
     assert result.res == "Mandatory"
 
 def test_felony_mandatory3():
-    given = 
-        {"crimes": 
+    given = {"crimes": 
             [{
                 "crime_type": "Felony",
                 "result": "Probation",
@@ -219,8 +206,7 @@ def test_felony_mandatory3():
     assert result.res == "Mandatory"
 
 def test_felony_discr():
-    given = 
-        {"crimes": 
+    given = {"crimes": 
             [{
                 "crime_type": "Felony",
                 "result": "Probation",
@@ -236,8 +222,7 @@ def test_felony_discr():
     assert result.res == "Discretionary"
 
 def test_felony_county_discr():
-    given = 
-        {"crimes": 
+    given = {"crimes": 
             [{
                 "crime_type": "Felony",
                 "result": "County Jail",
