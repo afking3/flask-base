@@ -80,6 +80,9 @@ class RuleSet:
         #self.edges = edges;
         self.createGraph()
 
+    def result(self, json):
+        pass
+
     """
     Returns a generator that each time returns a unique int, starting from 0
     To get the next value from the generator, call next(generator).
@@ -99,7 +102,7 @@ class RuleSet:
                 return edge.end_node
         return None
 
-    def evaluate(self, json):
+    def evaluate(self, json, messages = []):
         current_node = self.start_node
         while(current_node != None and current_node.out_edges != []):
             current_node = self.step(json, current_node)
@@ -111,33 +114,29 @@ class RuleSet:
     def createGraph(self):
         # nodes = []
         #edges = []
+        graph = {}
 
         node_counter = self.getUniqueId()
         edge_counter = self.getUniqueId()
 
         start_node = RuleSetNode(next(node_counter), "Start")
         self.start_node = start_node
-    
+
         prison = RuleSetNode(next(node_counter), "Prison")
-        prop_47_64_elig = RuleSetNode(next(node_counter), "Prop 47 Eligible")
-        not_prop_47_64_elig = RuleSetNode(next(node_counter), "Not Prop 47 Eligible")
         file_cr180_misdemeanor = RuleSetNode(next(node_counter), "File CR-180 Misdemeanor")
-        ab_109_eligible = RuleSetNode(next(node_counter), "Would've been AB 109 eligible")
-        not_ab_109_eligible = RuleSetNode(next(node_counter), """
-        Would not have been AB 109 eligible""")
+        not_prop_47_64_elig = RuleSetNode(next(node_counter), "Not Prop 47 Eligible")
         ab_109_discretionary = RuleSetNode(next(node_counter), "Discretionary")
         ab_109_options = RuleSetNode(next(node_counter), """Misdemeanor: NO
         probation, must wait one year. YES probation, see above\n Felony: Refer
         to L.A. Public Defender for \"Certificate of Rehabilitation\"""")
-
+        public_defender = RuleSetNode(next(node_counter), "LA Public Defender: (213) 974-3057")
         county_jail_ab_109 = RuleSetNode(next(node_counter), "COUNTY JAIL AB109")
-        county_jail_discretionary = RuleSetNode(next(node_counter), "Discretionary")
         jail_only = RuleSetNode(next(node_counter), """Jail Only, NO mandatory
         supervision. Must wait 2 years after release date to apply under 1203.41""")
         jail_and_supervision = RuleSetNode(next(node_counter), """Jail and mandatory
         supervision - must wait 1 year to apply under 1203.41""")
+
         probation = RuleSetNode(next(node_counter), "Probation")
-        code_1203_point_4 = RuleSetNode(next(node_counter), "1203.4")
         probation_completion = RuleSetNode(next(node_counter), """Successful completion
         of probation (Mandatory)""")
         probation_early_termination = RuleSetNode(next(node_counter), """Early
@@ -148,23 +147,96 @@ class RuleSet:
         code_1203_point4a = RuleSetNode(next(node_counter), "1203.4a")
         one_year_from_conviction_date = RuleSetNode(next(node_counter), """1 year
         from conviction date""")
-        convicted_of_crime_within_that_time = RuleSetNode(next(node_counter),
-        "Convicted of a crime within that time")
         convicted_discretionary = RuleSetNode(next(node_counter), "Discretionary")
-        not_convicted_of_a_crime_within_that_time = RuleSetNode(next(node_counter),
-        "Not convicted of a crime within that time")
         convicted_mandatory = RuleSetNode(next(node_counter), "Mandatory")
-        not_one_year_from_conviction_date = RuleSetNode(next(node_counter),
-        """Not 1 year from conviction date""")
         convicted_not_eligible = RuleSetNode(next(node_counter), "Not eligible")
 
         fine = RuleSetNode(next(node_counter), "Fine")
 
-        # (lamdba crime: crime.offense_code in prop47codes)
-        #(amdba crime: crime.offense_code not in prop47codes)
-        prison_eligible_path = RuleSetEdge(next(edge_counter), prison, prop_47_64_elig, lambda crime: crime.offense_code in prop47codes)
-        prison_not_eligible_path = RuleSetEdge(next(edge_counter), prison, not_prop_47_64_elig, lambda crime: crime.offense_code not in prop47codes)
+        # # (lamdba crime: crime.offense_code in prop47codes)
+        # #(amdba crime: crime.offense_code not in prop47codes)
+        # prison_eligible_path = RuleSetEdge(next(edge_counter), prison, prop_47_64_elig, lambda crime: crime.offense_code in prop47codes)
+        # prison_not_eligible_path = RuleSetEdge(next(edge_counter), prison, not_prop_47_64_elig, lambda crime: crime.offense_code not in prop47codes)
         
-        go_to_1203_pointa_path = RuleSetEdge(next(edge_counter), file_cr180_misdemeanor, code_1203_point4a, lambda crime: True)
+        # go_to_1203_pointa_path = RuleSetEdge(next(edge_counter), file_cr180_misdemeanor, code_1203_point4a, lambda crime: True)
 
-        not_ab109_eligible_path = RuleSetEdge(next(edge_counter), not_prop_47_64_elig, not_ab_109_eligible, lambda crime: isAB109Elig(crime))
+        # not_ab109_eligible_path = RuleSetEdge(next(edge_counter), not_prop_47_64_elig, not_ab_109_eligible, lambda crime: isAB109Elig(crime))
+
+        # #Add start edges
+
+        """
+        prison_eligible_path = RuleSetEdge(next(edge_counter), prison, prop_47_64_elig, condition = (lamdba (crime.offense_code in prop47codes)))
+        prison_not_eligible_path = RuleSetEdge(next(edge_counter), prison, not_prop_47_64_elig, condition = (lamdba (crime.offense_code not in prop47codes)))
+
+        go_to_1203_pointa_path = RuleSetEdge(next(edge_counter), file_cr180_misdemeanor, code_1203_point4a, condition = (lambda crime: True))
+
+        ab109_eligible_path = RuleSetEdge(next(edge_counter), not_prop_47_64_elig, ab_109_eligible, condition= (lambda crime: not isAB109Elig(crime)))
+        ab109_discretionary_path = RuleSetEdge(next(edge_counter), ab_109_eligible, ab_109_discretionary)
+        not_ab109_eligible_path = RuleSetEdge(next(edge_counter), not_prop_47_64_elig, not_ab_109_eligible, condition= (lambda crime: isAB109Elig(crime)))
+        ab109_options_path = RuleSetEdge(next(edge_counter), not_ab_109_eligible, ab_109_options)
+
+        county_jail_ab109_path = RuleSetEdge(next(edge_counter), county_jail_ab_109, county_jail_discretionary)
+        """
+
+
+        graph[start_node] = [   #create all these helper functions
+        (prison, lambda x: isPrison(x)),
+        (county_jail_ab_109, lambda x: isCountyJail(x)),
+        (probation, lambda x: isProbation(x)),
+        (up_to_1_year, lambda x: isUpTo1year(x))
+        ]
+
+        graph[prison] = [
+        (file_cr180_misdemeanor, lambda x: x in prop47codes),
+        (not_prop_47_64_elig, lambda x: x not in prop47codes)
+        ]
+
+        graph[file_cr180_misdemeanor] = [(code_1203_point4a, lambda x: True)]
+
+        graph[not_prop_47_64_elig] = [
+        (ab_109_discretionary, lambda x: isAB109Elig(x)),
+        (ab_109_options, lambda x: not isAB109Elig(x))
+        ]
+
+        graph[ab_109_discretionary] = []
+
+        graph[ab_109_options] = [
+        (public_defender, lambda x: isFelony(x)),
+        (probation, lambda x: isMisdemeanor(x) and isProbation(x)),
+        (code_1203_point4a, lambda x: isMisdemeanor(x) and not isProbation(x))
+        ]
+
+        graph[public_defender] = []
+
+        graph[county_jail_ab_109] = [
+        (jail_only, lambda x: not isSupervision(x)),
+        (jail_and_supervision, lambda x: isSupervision(x))
+        ]
+
+        graph[jail_only] = []
+        graph[jail_and_supervision] = []
+
+        graph[probation] = [
+        (probation_completion, lambda x: isProbationCompletion(x)),
+        (probation_early_termination, lambda x: isEarlyTermination(x)),
+        (probation_discretionary, lambda x: not (isProbationCompletion(x) and isEarlyTermination(x)))
+        ]
+        graph[probation_completion] = []
+        graph[probation_early_termination] = []
+        graph[probation_discretionary] = []
+
+        graph[up_to_1_year] = [(code_1203_point4a lambda x: True)]
+
+        graph[code_1203_point4a] = [
+        (one_year_from_conviction_date, lambda x: yearsSinceConvictionDate(x) <= 1),
+        (convicted_not_eligible, lambda x: yearsSinceConvictionDate(x) > 1)
+        ]
+
+        graph[one_year_from_conviction_date] = [
+        (convicted_discretionary, lambda x: isConvicted(x)),
+        (convicted_mandatory, lambda x: not isConvicted(x))
+        ]
+
+        graph[convicted_discretionary] = []
+        graph[convicted_mandatory] = []
+        graph[convicted_not_eligible] = []
