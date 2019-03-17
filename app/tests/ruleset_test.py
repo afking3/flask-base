@@ -138,15 +138,8 @@ def test_misdemeanor_mandatory3():
                 "probation_status": "Early Termination"
             }]
         }
-<<<<<<< HEAD
     
     assertResult(given, [], "Mandatory")
-=======
-
-    result = r.result(given)
-    assert result.messages == []
-    assert result.result == "Mandatory"
->>>>>>> 74ac991891acac86806c6ae186831a8692c5dbca
 
 def test_misdemeanor_mandatory4():
     given = {"crimes": [{
@@ -157,10 +150,6 @@ def test_misdemeanor_mandatory4():
                 "offense_code": None,
                 "probation_status": "Not Completed"
             }]}
-<<<<<<< HEAD
-=======
-
->>>>>>> 74ac991891acac86806c6ae186831a8692c5dbca
     assertResult(given, [], "Discretionary")
 
 def test_felony_mandatory2():
@@ -206,7 +195,6 @@ def test_felony_discr():
         }
 
     assertResult(given, [], "Discretionary")
-
 
 def test_felony_county_discr():
     given = {"crimes":
