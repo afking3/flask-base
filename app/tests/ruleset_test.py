@@ -13,12 +13,8 @@ r = ruleset.RuleSet()
 
 def assertResult(given, expected_messages, expected_result):
     result = r.result(given)
-    assert result["messages"] == []
-    assert result["result"] == "Discretionary"
-
-def test_e():
-    print("hi")
-    assert ruleset.dummy_input != None
+    assert result["messages"] == expected_messages
+    assert result["result"] == expected_result
 
 def test_infraction_not_eligible():
     given = {"crimes":
@@ -165,7 +161,6 @@ def test_felony_mandatory2():
         }
 
     assertResult(given, [], "Mandatory")
-
 
 def test_felony_mandatory3():
     given = {"crimes":
