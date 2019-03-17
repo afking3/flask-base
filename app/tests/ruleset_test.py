@@ -44,10 +44,7 @@ def test_infraction_mandatory():
                 "probation_status": None
             }]
         }
-
-    result = r.result(given)
-    assert result.messages == []
-    assert result.result == "Mandatory"
+    assertResult(given, [], "Mandatory")
 
 def test_infraction_discretionary():
     given = {"crimes": 
@@ -67,11 +64,7 @@ def test_infraction_discretionary():
                 "probation_status": None
             }]
         }
-
-    result = r.result(given)
-    assert result.messages == [] 
-    assert result.result == "Discretionary"
-
+    assertResult(given, [], "Discretionary")
 
 def test_misdemeanor_discretionary():
     given = {"crimes": 
@@ -91,11 +84,7 @@ def test_misdemeanor_discretionary():
                 "probation_status": None
             }]
         }
-
-    result = r.result(given)
-    assert result.messages == [] 
-    assert result.result == "Discretionary"
-
+    assertResult(given, [], "Discretionary")
 
 def test_misdemeanor_mandatory():
     given = {"crimes": 
@@ -108,10 +97,7 @@ def test_misdemeanor_mandatory():
                 "probation_status": None
             }]
         }
-
-    result = r.result(given)
-    assert result.messages == []
-    assert result.result == "Mandatory"
+    assertResult(given, [], "Mandatory")
 
 def test_misdemeanor_not_eligible():
     given = {"crimes": 
@@ -125,10 +111,7 @@ def test_misdemeanor_not_eligible():
             }]
         }
 
-    result = r.result(given)
-    assert result.messages == [] 
-    assert result.result == "Not Eligible"
-
+    assertResult(given, [], "Not Eligible")
 
 def test_misdemeanor_mandatory2():
     given = {"crimes": 
@@ -142,9 +125,7 @@ def test_misdemeanor_mandatory2():
             }]
         }
 
-    result = r.result(given)
-    assert result.messages == [] 
-    assert result.result == "Mandatory"
+    assertResult(given, [], "Mandatory")
 
 def test_misdemeanor_mandatory3():
     given = {"crimes": 
@@ -157,10 +138,8 @@ def test_misdemeanor_mandatory3():
                 "probation_status": "Early Termination"
             }]
         }
-
-    result = r.result(given)
-    assert result.messages == [] 
-    assert result.result == "Mandatory"
+    
+    assertResult(given, [], "Mandatory")
 
 def test_misdemeanor_mandatory4():
     given = {"crimes": [{
@@ -171,10 +150,7 @@ def test_misdemeanor_mandatory4():
                 "offense_code": None,
                 "probation_status": "Not Completed"
             }]}
-
-    result = r.result(given)
-    assert result.messages == [] 
-    assert result.result == "Discretionary"
+    assertResult(given, [], "Discretionary")
 
 def test_felony_mandatory2():
     given = {"crimes": 
