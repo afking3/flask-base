@@ -11,6 +11,22 @@ dummy_input = {
     }]
 }
 
+class Rapsheet():
+    def __init__(self, crimes = []):
+        self.crimes = crimes
+
+    def addCrime(self, crime):
+        self.crimes.append(crime)
+
+class Crime():
+    def __init__(self, crime_type, result, convict_date, offense, offense_code, prob_status):
+        self.crime_type = crime_type
+        self.result = result
+        self.conviction_date = convict_date
+        self.offense = offense
+        self.offense_code = offense_code
+        self.probation_status = prob_status
+
 def isAB109Elig(crime):
     return True
 

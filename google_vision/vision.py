@@ -192,8 +192,8 @@ def getDate(dateString):
 
     
         
-
-detect_document()
+if __name__ == "__main__":
+    detect_document()
 
 # info={'Crimes':{}}
 # detect_document(r"images/Sample RAP Sheet-rotated-3.jpg", info)
