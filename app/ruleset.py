@@ -1,62 +1,71 @@
-dummy_input = {
-    "crimes": [{
-        "crime_type": "Felony",
-        "result": "Prison",
-        "conviction_date": "02-26-1990",
-        "offense": None,
-        "offense_code": None,
-        "probation_status": None
-    }]
-}
+from datetime import datetime
 
-"Returns boolean of if crime is AB 109 eligible"
-def isAB109Elig(crime):
+class Rapsheet():
+    def __init__(self, crimes = []):
+        self.crimes = crimes
+
+    def addCrime(self, crime):
+        self.crimes.append(crime)
+
+class Crime():
+    def __init__(self, crime_type, result, convict_date, offense, offense_code, prob_status):
+        self.crime_type = crime_type
+        self.result = result
+        self.conviction_date = convict_date
+        self.offense = offense
+        self.offense_code = offense_code
+        self.probation_status = prob_status
+
+def inPropCodes(crime, rapsheet):
+    return crime.offense_code in prop47codes
+
+def notInPropCodes(crime, rapsheet):
+    return not inPropCodes(crime, rapsheet)
+
+def isAB109Elig(crime, rapsheet):
     return True
 
-def isPrison(crime):
+def isPrison(crime, rapsheet):
+    return crime.result == "Prison"
+
+def isCountyJail(crime, rapsheet):
+    return crime.result == "County Jail"
+
+def isProbation(crime, rapsheet):
+    return crime.result == "Probation"
+
+def isUpTo1year(crime, rapsheet):
     return True
 
-def isCountyJail(crime):
+def isFelony(crime, rapsheet):
+    return crime.crime_type == "Felony"
+
+def isMisdemeanor(crime, rapsheet):
+    return crime.crime_type == "Misdemeanor"
+
+def isSupervision(crime, rapsheet):
+    return crime.result == "Probation"
+
+def isProbationCompletion(crime, rapsheet):
+    return crime.probation_status == "Completed"
+
+def isEarlyTermination(crime, rapsheet):
+    return crime.probation_status == "Early Termination"
+
+def yearsSinceConvictionDate(crime, rapsheet):
+    current_year = int(datetime.today().strftime('%Y'))
+    conviction_year = int(crime.conviction_date[-4:])
+    return current_year - conviction_year
+
+def isConvicted(crime, rapsheet):
     return True
 
-def isProbation(crime):
-    return True
-
-def isUpTo1year(crime):
-    return True
-
-def isFelony(crime):
-    return True
-
-def isMisdemeanor(crime):
-    return True
-
-def isSupervision(crime):
-    return True
-    
-"""
-    RuleSetNode{
-        id: a unique integer identifier for each edge
-        name: a string identifier
-    }
-"""
 class RuleSetNode:
-    def __init__(self, id, name, edges = []):
+    def __init__(self, id, name, messages = []):
         self.id = id
         self.name = name
-        self.out_edges = edges
+        self.messages = messages
 
-    def addEdge(self, edge):
-        self.out_edges.append(edge)
-
-"""
-    RuleSetEdge{
-        id: a unique integer identifier for each edge
-        start_node: the origin node
-        end_node: the destination node
-        condition: a function (dict -> bool) that checks if the
-    }
-"""
 class RuleSetEdge:
     def __init__(self, id, start_node, end_node, condition = (lambda _: True)):
         self.id = id
@@ -69,43 +78,25 @@ prop47codes = ["487", "490.2", "459.5", "459", "461", "496", "666", "473", "476"
 
 class RuleSet:
 
-    """
-    Inputs: JSON Object
-    {
-        crimes: [{
-            crime_type: [Felony, Misdemeanor, Infraction],
-            result: [Prison, Probation, County Jail, Fine, N/A, Dispo],
-            conviction_date: [date],
-            offense: [etc],
-            offense_code: [some type],
-            probation_status: [some type],
-        }],
-    }
-
-    Outputs: JSON Object
-    {
-        crime_results: [{
-            types: [Discretionary, Mandatory, Not Eligible, Wait/Deferred, Reduction],
-            wait_time: [int],
-            deferment_result: []
-        }]
-    }
-    """
-
     def __init__(self):
-        #create the graph here
-        #(nodes, edges) = self.createGraph();
-        #self.nodes = self.createGraph()
-        #self.edges = edges;
         self.createGraph()
 
-    def result(self, json):
-        end_node, messages = self.evaluate(json)
-        result = {
-            "result": end_node.name, 
-            "messages": messages
+    def result(self, crime, rapsheet):
+        assert(isinstance(crime, Crime))
+        assert(isinstance(rapsheet, Rapsheet))
+
+        end_node, messages = self.evaluate(crime, rapsheet)
+        resulting_obj = {
+            'result': end_node.name,
+            'messages': messages
         }
-        return result
+        return resulting_obj
+
+    def resultsFromRapSheet(self, rapsheet):
+        assert(isinstance(rapsheet, Rapsheet))
+
+        results = [self.result(crime, rapsheet) for crime in rapsheet.crimes]
+        return results
 
     """
     Returns a generator that each time returns a unique int, starting from 0
@@ -117,35 +108,27 @@ class RuleSet:
             yield temp
             temp += 1
 
-    def isAB109Elig(crime):
-        return True
+    def step(self, crime, rapsheet, current_node):
+        assert(isinstance(crime, Crime))
+        assert(isinstance(rapsheet, Rapsheet))
+        assert(isinstance(current_node, RuleSetNode))
 
-
-
-    def isProbationCompletion(crime):
-        True
-
-    def isEarlyTermination(crime):
-        return True
-
-    def yearsSinceConvictionDate(crime):
-        return 0
-
-    def isConvicted(crime):
-        return True
-
-    def step(self, json, node):
-        for (dest, predicate) in graph[node]:
-            if predicate(json):
+        for (dest, predicate) in self.graph[current_node]:
+            assert(type(predicate) == type(lambda x, y: x + y))
+            if predicate(crime, rapsheet):
                 return dest
         return None
 
-    def evaluate(self, json, messages = []):
+    def evaluate(self, crime, rapsheet, messages = []):
+        assert(isinstance(crime, Crime))
+        assert(isinstance(rapsheet, Rapsheet))
+        assert(type(messages) == type([]))
+
         current_node = self.start_node
-        while(current_node != None and len(graph[current_node]) > 0):
-            current_node = self.step(json, current_node)
-            if(current_node != None and current_node.message):
-                messages.append(current_node.message)
+        while(current_node != None and len(self.graph[current_node]) > 0):
+            current_node = self.step(crime, rapsheet, current_node)
+            if(current_node != None and current_node.messages):
+                messages.append(current_node.messages)
         return (current_node, messages)
 
     """
@@ -157,7 +140,7 @@ class RuleSet:
         graph = {}
 
         node_counter = self.getUniqueId()
-        edge_counter = self.getUniqueId()
+        #edge_counter = self.getUniqueId()
 
         start_node = RuleSetNode(next(node_counter), "Start")
         self.start_node = start_node
@@ -193,90 +176,66 @@ class RuleSet:
 
         fine = RuleSetNode(next(node_counter), "Fine")
 
-        # # (lamdba crime: crime.offense_code in prop47codes)
-        # #(amdba crime: crime.offense_code not in prop47codes)
-        # prison_eligible_path = RuleSetEdge(next(edge_counter), prison, prop_47_64_elig, lambda crime: crime.offense_code in prop47codes)
-        # prison_not_eligible_path = RuleSetEdge(next(edge_counter), prison, not_prop_47_64_elig, lambda crime: crime.offense_code not in prop47codes)
-
-        # go_to_1203_pointa_path = RuleSetEdge(next(edge_counter), file_cr180_misdemeanor, code_1203_point4a, lambda crime: True)
-
-        # not_ab109_eligible_path = RuleSetEdge(next(edge_counter), not_prop_47_64_elig, not_ab_109_eligible, lambda crime: isAB109Elig(crime))
-
-        # #Add start edges
-
-        """
-        prison_eligible_path = RuleSetEdge(next(edge_counter), prison, prop_47_64_elig, condition = (lamdba (crime.offense_code in prop47codes)))
-        prison_not_eligible_path = RuleSetEdge(next(edge_counter), prison, not_prop_47_64_elig, condition = (lamdba (crime.offense_code not in prop47codes)))
-
-        go_to_1203_pointa_path = RuleSetEdge(next(edge_counter), file_cr180_misdemeanor, code_1203_point4a, condition = (lambda crime: True))
-
-        ab109_eligible_path = RuleSetEdge(next(edge_counter), not_prop_47_64_elig, ab_109_eligible, condition= (lambda crime: not isAB109Elig(crime)))
-        ab109_discretionary_path = RuleSetEdge(next(edge_counter), ab_109_eligible, ab_109_discretionary)
-        not_ab109_eligible_path = RuleSetEdge(next(edge_counter), not_prop_47_64_elig, not_ab_109_eligible, condition= (lambda crime: isAB109Elig(crime)))
-        ab109_options_path = RuleSetEdge(next(edge_counter), not_ab_109_eligible, ab_109_options)
-
-        county_jail_ab109_path = RuleSetEdge(next(edge_counter), county_jail_ab_109, county_jail_discretionary)
-        """
-
-
         graph[start_node] = [   #create all these helper functions
-        (prison, lambda x: isPrison(x)),
-        (county_jail_ab_109, lambda x: isCountyJail(x)),
-        (probation, lambda x: isProbation(x)),
-        (up_to_1_year, lambda x: isUpTo1year(x))
+            (prison, isPrison),
+            (county_jail_ab_109, isCountyJail),
+            (probation, isProbation),
+            (up_to_1_year, isUpTo1year)
         ]
 
         graph[prison] = [
-        (file_cr180_misdemeanor, lambda x: x in prop47codes),
-        (not_prop_47_64_elig, lambda x: x not in prop47codes)
+            (file_cr180_misdemeanor, inPropCodes),
+            (not_prop_47_64_elig, notInPropCodes)
         ]
 
-        graph[file_cr180_misdemeanor] = [(code_1203_point4a, lambda x: True)]
+        graph[file_cr180_misdemeanor] = [(code_1203_point4a,  True)]
 
         graph[not_prop_47_64_elig] = [
-        (ab_109_discretionary, lambda x: isAB109Elig(x)),
-        (ab_109_options, lambda x: not isAB109Elig(x))
+            (ab_109_discretionary, isAB109Elig),
+            (ab_109_options, lambda x, y: not isAB109Elig(x, y))
         ]
 
         graph[ab_109_discretionary] = []
 
         graph[ab_109_options] = [
-        (public_defender, lambda x: isFelony(x)),
-        (probation, lambda x: isMisdemeanor(x) and isProbation(x)),
-        (code_1203_point4a, lambda x: isMisdemeanor(x) and not isProbation(x))
+            (public_defender, isFelony),
+            (probation, lambda x, y: isMisdemeanor(x, y) and isProbation(x, y)),
+            (code_1203_point4a, lambda x, y: isMisdemeanor(x, y) and not isProbation(x, y))
         ]
 
         graph[public_defender] = []
 
         graph[county_jail_ab_109] = [
-        (jail_only, lambda x: not isSupervision(x)),
-        (jail_and_supervision, lambda x: isSupervision(x))
+            (jail_only, lambda x, y: not isSupervision(x, y)),
+            (jail_and_supervision, isSupervision)
         ]
 
         graph[jail_only] = []
         graph[jail_and_supervision] = []
 
         graph[probation] = [
-        (probation_completion, lambda x: isProbationCompletion(x)),
-        (probation_early_termination, lambda x: isEarlyTermination(x)),
-        (probation_discretionary, lambda x: not (isProbationCompletion(x) and isEarlyTermination(x)))
+            (probation_completion, isProbationCompletion),
+            (probation_early_termination,  isEarlyTermination),
+            (probation_discretionary, lambda x, y: not (isProbationCompletion(x, y) and isEarlyTermination(x, y)))
         ]
         graph[probation_completion] = []
         graph[probation_early_termination] = []
         graph[probation_discretionary] = []
 
-        graph[up_to_1_year] = [(code_1203_point4a, lambda x: True)]
+        graph[up_to_1_year] = [(code_1203_point4a,  lambda x, y: True)]
 
         graph[code_1203_point4a] = [
-        (one_year_from_conviction_date, lambda x: yearsSinceConvictionDate(x) <= 1),
-        (convicted_not_eligible, lambda x: yearsSinceConvictionDate(x) > 1)
+            (one_year_from_conviction_date, lambda x, y: yearsSinceConvictionDate(x, y) <= 1),
+            (convicted_not_eligible, lambda x, y: yearsSinceConvictionDate(x, y) > 1)
         ]
 
         graph[one_year_from_conviction_date] = [
-        (convicted_discretionary, lambda x: isConvicted(x)),
-        (convicted_mandatory, lambda x: not isConvicted(x))
+            (convicted_discretionary, lambda x, y: isConvicted(x, y)),
+            (convicted_mandatory, lambda x, y: not isConvicted(x, y))
         ]
 
         graph[convicted_discretionary] = []
         graph[convicted_mandatory] = []
         graph[convicted_not_eligible] = []
+
+        self.graph = graph
