@@ -12,9 +12,9 @@ two_years_ago = now - relativedelta(years=2)
 r = rs.RuleSet()
 
 
-def assertResults(given, list_of_expected): 
+def assertResults(rapsheet, list_of_expected): 
     #expected_messages, expected_result):
-    results = r.resultsFromRapSheet(given)
+    results = r.resultsFromRapSheet(rapsheet)
     for i in range(len(results)):
         result = results[i]
         expected_result = list_of_expected[i]
@@ -51,7 +51,7 @@ def test_infraction_discretionary():
     #Fix this test
     expected = [
         [[], "Discretionary"], 
-        [[], "Discretionary"]
+        [[], "Not Eligible"]
     ]
     assertResults(given, expected)
 
@@ -63,7 +63,7 @@ def test_misdemeanor_discretionary():
         ])
     expected = [
         [[], "Discretionary"], 
-        [[], "Discretionary"]
+        [[], "Not Eligible"]
     ]
     assertResults(given, expected)
 
@@ -90,7 +90,7 @@ def test_misdemeanor_not_eligible():
 def test_misdemeanor_mandatory2():
     given = rs.Rapsheet(
         [
-            rs.Crime("Misdemeanor", "Probation", week_ago, None, None, None), 
+            rs.Crime("Misdemeanor", "Probation", week_ago, None, None, "Completed"), 
         ])
     expected = [
         [[], "Mandatory"], 
