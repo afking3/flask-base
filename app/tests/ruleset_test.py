@@ -11,101 +11,149 @@ two_years_ago = now - relativedelta(years=2)
 
 r = rs.RuleSet()
 
-def assertResult(given, expected_messages, expected_result):
-    result = r.result(given)
-    assert result["messages"] == expected_messages
-    assert result["result"] == expected_result
+
+def assertResults(given, list_of_expected): 
+    #expected_messages, expected_result):
+    results = r.resultsFromRapSheet(given)
+    for i in range(len(results)):
+        result = results[i]
+        expected_result = list_of_expected[i]
+        assert result["messages"] == expected_result[0]
+        assert result["result"] == expected_result[1]
 
 def test_infraction_not_eligible():
-    given = rs.RapSheet(
+    given = rs.Rapsheet(
         [
             rs.Crime("Infraction", "Fine", week_ago, None, None, None)
         ])
-    assertResult(given, [], "Not Eligible")
+    expected = [
+        [[], "Not Eligible"]
+    ]
+
+    assertResults(given, expected)
 
 def test_infraction_mandatory():
-    given = rs.RapSheet(
+    given = rs.Rapsheet(
         [
             rs.Crime("Infraction", "Fine", two_years_ago, None, None, None)
         ])
-    assertResult(given, [], "Mandatory")
+    expected = [
+        [[],  "Mandatory"]
+    ]
+    assertResults(given, expected)
 
 def test_infraction_discretionary():
-    given = rs.RapSheet(
+    given = rs.Rapsheet(
         [
             rs.Crime("Infraction", "Fine", two_years_ago, None, None, None), 
             rs.Crime("Infraction", "Fine", week_ago, None, None, None)
         ])
-    assertResult(given, [], "Discretionary")
+    #Fix this test
+    expected = [
+        [[], "Discretionary"], 
+        [[], "Discretionary"]
+    ]
+    assertResults(given, expected)
 
 def test_misdemeanor_discretionary():
-    given = rs.RapSheet(
+    given = rs.Rapsheet(
         [
             rs.Crime("Misdemeanor", "Up To A Year In County Jail", two_years_ago, None, None, None), 
             rs.Crime("Infraction", "Fine", week_ago, None, None, None)
         ])
-    assertResult(given, [], "Discretionary")
+    expected = [
+        [[], "Discretionary"], 
+        [[], "Discretionary"]
+    ]
+    assertResults(given, expected)
 
 def test_misdemeanor_mandatory():
-    given = rs.RapSheet(
+    given = rs.Rapsheet(
         [
             rs.Crime("Misdemeanor", "Up To A Year In County Jail", two_years_ago, None, None, None), 
         ])
-    assertResult(given, [], "Mandatory")
+    expected = [
+        [[], "Mandatory"], 
+    ]
+    assertResults(given, expected)
 
 def test_misdemeanor_not_eligible():
-    given = rs.RapSheet(
+    given = rs.Rapsheet(
         [
             rs.Crime("Misdemeanor", "Up To A Year In County Jail", week_ago, None, None, None), 
         ])
-    assertResult(given, [], "Not Eligible")
+    expected = [
+        [[], "Not Eligible"], 
+    ]
+    assertResults(given, expected)
 
 def test_misdemeanor_mandatory2():
-    given = rs.RapSheet(
+    given = rs.Rapsheet(
         [
             rs.Crime("Misdemeanor", "Probation", week_ago, None, None, None), 
         ])
-    assertResult(given, [], "Mandatory")
+    expected = [
+        [[], "Mandatory"], 
+    ]
+    assertResults(given, expected)
 
 def test_misdemeanor_mandatory3():
-    given = rs.RapSheet(
+    given = rs.Rapsheet(
         [
             rs.Crime("Misdemeanor", "Probation", week_ago, None, None, "Early Termination"), 
         ])
-    assertResult(given, [], "Mandatory")
+    expected = [
+        [[], "Mandatory"], 
+    ]
+    assertResults(given, expected)
 
 def test_misdemeanor_mandatory4():
-    given = rs.RapSheet(
+    given = rs.Rapsheet(
         [
             rs.Crime("Misdemeanor", "Probation", week_ago, None, None, "Not Completed"), 
         ])
-    assertResult(given, [], "Discretionary")
+    expected = [
+        [[], "Discretionary"], 
+    ]
+    assertResults(given, expected)
 
 def test_felony_mandatory2():
-    given = rs.RapSheet(
+    given = rs.Rapsheet(
         [
             rs.Crime("Felony", "Probation", week_ago, None, None, "Completed"), 
         ])
-    assertResult(given, [], "Mandatory")
+    expected = [
+        [[], "Mandatory"], 
+    ]
+    assertResults(given, expected)
 
 def test_felony_mandatory3():
-    given = rs.RapSheet(
+    given = rs.Rapsheet(
         [
             rs.Crime("Felony", "Probation", week_ago, None, None, "Early Termination"), 
         ])
-    assertResult(given, [], "Mandatory")
+    expected = [
+        [[], "Mandatory"], 
+    ]
+    assertResults(given, expected)
 
 
 def test_felony_discr():
-    given = rs.RapSheet(
+    given = rs.Rapsheet(
         [
             rs.Crime("Felony", "Probation", week_ago, None, None, "Not Completed"), 
         ])
-    assertResult(given, [], "Discretionary")
+    expected = [
+        [[], "Discretionary"], 
+    ]
+    assertResults(given, expected)
 
 def test_felony_county_discr():
-    given = rs.RapSheet(
+    given = rs.Rapsheet(
         [
             rs.Crime("Felony", "County Jail", week_ago, "non_violent, non_serious", None, "Not Completed"), 
         ])
-    assertResult(given, [], "Discretionary")
+    expected = [
+        [[], "Discretionary"], 
+    ]
+    assertResults(given, expected)
