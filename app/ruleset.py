@@ -1,3 +1,5 @@
+from datetime import datetime
+
 dummy_input = {
     "crimes": [{
         "crime_type": "Felony",
@@ -29,34 +31,36 @@ def isAB109Elig(crime):
     return True
 
 def isPrison(crime):
-    return True
+    return crime["result"] == "Prison"
 
 def isCountyJail(crime):
-    return True
+    return crime["result"] == "County Jail"
 
 def isProbation(crime):
-    return crime["crimes"][0]["result"] == "Probation"
+    return crime["result"] = "Probation"
 
 def isUpTo1year(crime):
     return True
 
 def isFelony(crime):
-    return True
+    return crime["crime_type"] == "Felony"
 
 def isMisdemeanor(crime):
-    return True
+    return crime["crime_type"] == "Misdemeanor"
 
 def isSupervision(crime):
-    return True
+    return crime["result"] = "Probation"
 
 def isProbationCompletion(crime):
-    True
+    return crime["probation_status"] = "Completed"
 
 def isEarlyTermination(crime):
-    return True
+    return crime["probation_status"] = "Early Termination"
 
 def yearsSinceConvictionDate(crime):
-    return 0
+    current_year = int(datetime.today().strftime('%Y'))
+    conviction_year = int(crime['conviction_date'][-4:])
+    return current_year - conviction_year
 
 def isConvicted(crime):
     return True
@@ -90,7 +94,7 @@ class RuleSet:
     def result(self, json):
         end_node, messages = self.evaluate(json)
         resulting_obj = {
-            'result': end_node.name, 
+            'result': end_node.name,
             'messages': messages
         }
         return resulting_obj
