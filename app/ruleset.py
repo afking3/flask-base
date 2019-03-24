@@ -95,6 +95,10 @@ class RuleSet:
         }
         return resulting_obj
 
+    def resultFromRapSheet(self, rapsheet):
+        results = [self.result(crime) for crime in rapsheet.crimes]
+        return results
+
     """
     Returns a generator that each time returns a unique int, starting from 0
     To get the next value from the generator, call next(generator).
