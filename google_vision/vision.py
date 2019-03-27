@@ -65,6 +65,11 @@ def detect_document():
 
                     # TODO: Create a function for these checks and refactor
                     
+                    #Skip if line contains this as it messes with DISPO 
+                    #parsing
+                    if "NO LONGER INTERESTED" in para:
+                        continue
+
                     #Check line for convict's name
                     if 'NAM/001' in para:
                         info['Name']=para.split("NAM/001",1)[1]
@@ -94,8 +99,8 @@ def detect_document():
                         #Check for crime and get PC.
                         #PC stands for penal code
                         if 'PC-' in para:
-                            code=para.split("PC",1)[0]
-                            crime_type=para.split("PC",1)[1]
+                            code=para.split("PC-",1)[0]
+                            crime_type=para.split("PC-",1)[1]
                             if 'DISPO' in crime_type:
                                 crime_type=crime_type.split("DISPO:",1)[0]
                             crime_count+=1
@@ -122,7 +127,47 @@ def detect_document():
                                 crime={}
                             else:
                                 crime=Crimes[str(crime_count)]
-                            crime["DISPO"]=para.split("DISPO:",1)[1]
+                            if len(para.split("DISPO:",1)) > 1:
+                                crime["DISPO"]=para.split("DISPO:",1)[1]
+                        
+
+                        #TODO: Refactor this
+                        if 'VC-DRIVE' in para:
+                            code=para.split("VC-DRIVE",1)[0]
+                            crime_type=para.split("VC-DRIVE",1)[1]
+                            if 'DISPO' in crime_type:
+                                crime_type=crime_type.split("DISPO:",1)[0]
+                            crime_count+=1
+                            Crimes[str(crime_count)]={"Code":str(code), "Type":crime_type}
+                            if 'DISPO' in para:
+                                crime=Crimes[str(crime_count)]
+                                crime["DISPO"]=para.split("DISPO:",1)[1]
+                        elif 'DISPO' in para:
+                            if crime_count==0:
+                                crime={}
+                            else:
+                                crime=Crimes[str(crime_count)]
+                            if len(para.split("DISPO:",1)) > 1:
+                                crime["DISPO"]=para.split("DISPO:",1)[1]
+
+                         #TODO: Refactor this
+                        if 'VC-DRIVER' in para:
+                            code=para.split("VC-DRIVER",1)[0]
+                            crime_type=para.split("VC-DRIVER",1)[1]
+                            if 'DISPO' in crime_type:
+                                crime_type=crime_type.split("DISPO:",1)[0]
+                            crime_count+=1
+                            Crimes[str(crime_count)]={"Code":str(code), "Type":crime_type}
+                            if 'DISPO' in para:
+                                crime=Crimes[str(crime_count)]
+                                crime["DISPO"]=para.split("DISPO:",1)[1]
+                        elif 'DISPO' in para:
+                            if crime_count==0:
+                                crime={}
+                            else:
+                                crime=Crimes[str(crime_count)]
+                            if len(para.split("DISPO:",1)) > 1:
+                                crime["DISPO"]=para.split("DISPO:",1)[1]
                         
                         if 'CONV STATUS' in para:
                             convictionStatus=para.split("STATUS",1)[1].split("SEN",1)[0]
@@ -148,20 +193,23 @@ def detect_document():
 
                         
                         prev_line=para
+        # print("page: "+str(pageCount))
+        # print(paragraphs)
 
 
-
-                     
 
                     
     info['Courts']=Courts
-    print(paragraphs)
+    
     info=json.dumps(info)
     parsed = json.loads(info)
-    # print(json.dumps(parsed, indent=4, sort_keys=True))
+    print(json.dumps(parsed, indent=4, sort_keys=True))
     # print(info)
     return info
     #print(lines)
+
+# def codeChecker (codeType, line, Crimes):
+
 
 def removeDupCrimes (Crimes): 
     newCrimes={}
@@ -192,8 +240,8 @@ def getDate(dateString):
 
     
         
-
-detect_document()
+if __name__ == "__main__":
+    detect_document()
 
 # info={'Crimes':{}}
 # detect_document(r"images/Sample RAP Sheet-rotated-3.jpg", info)
