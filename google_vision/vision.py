@@ -1,6 +1,7 @@
 import io
 import os
 import json
+import file_handling
 from rapsheet import Rapsheet
 
 from google.oauth2 import service_account
@@ -67,7 +68,7 @@ def detect_document():
             if words[i] == 'NAM/001':
                 rapsheet.set_name(words[i+1] + words[i+2])
 
-            if ('ARR/DET/CITE:' in prev_line or "COURT" in prev_line):
+            if words[i] == 'ARR/DET/CITE:' or words[i] == "COURT":
                 if lastDate is not None:
                     Courts[str(court_count)]={"Date":lastDate ,"Crimes":removeDupCrimes(Crimes)}
                     Crimes={}
@@ -186,10 +187,29 @@ def getDate(dateString):
 
     return None
 
+
+def parse_document(pdf_name):
+    entire_doc = []
+    imgs = file_handling.open_file(pdf_name)
+    for img in imgs:
+        entire_doc += get_words(get_response(img))
+    entire_doc = [x.encode('UTF-8') for x in entire_doc]
+
+    print(entire_doc)
     
-        
+    rapsheet = Rapsheet()
+
+    for i in range(len(entire_doc)):
+        if entire_doc[i] == 'NAM/001':
+            rapsheet.set_name(entire_doc[i+1] + entire_doc[i+2])
+    
+    print(rapsheet.name)
+
+
+
+  
 if __name__ == "__main__":
-    detect_document()
+    parse_document("sample rap sheet.pdf")
 
 # info={'Crimes':{}}
 # detect_document(r"images/Sample RAP Sheet-rotated-3.jpg", info)

@@ -39,7 +39,7 @@ def open_file(filename):
     for img in imgs:
         output = BytesIO()
         img.save(output, 'JPEG')
-        outputs.append(output)
-
+        outputs.append(output.getvalue())
+        
     return outputs
     

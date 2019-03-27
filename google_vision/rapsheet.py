@@ -2,7 +2,8 @@ import datetime
 
 class Rapsheet(object):
     crimes = []
-
+    name = ""
+    occ = ""
     def __init__(self):
         pass
 
@@ -13,7 +14,7 @@ class Rapsheet(object):
         self.occ = occ
 
     def add_crime(self, crime):
-        crimes.append(crime)
+        self.crimes.append(crime)
 
     
 
@@ -29,6 +30,6 @@ class Crime(object):
         self.result = result
     
     #Sets date. Takes a rapsheet-formatted date (yyyymmdd)
-    def  
+    #def
     
     
