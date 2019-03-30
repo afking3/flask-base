@@ -61,10 +61,10 @@ def isConvicted(crime, rapsheet):
     return True
 
 class RuleSetNode:
-    def __init__(self, id, name, messages = []):
+    def __init__(self, id, name, message = ""):
         self.id = id
         self.name = name
-        self.messages = messages
+        self.message = message
 
 class RuleSetEdge:
     def __init__(self, id, start_node, end_node, condition = (lambda _: True)):
@@ -119,16 +119,20 @@ class RuleSet:
                 return dest
         return None
 
-    def evaluate(self, crime, rapsheet, messages = []):
+    def evaluate(self, crime, rapsheet):
         assert(isinstance(crime, Crime))
         assert(isinstance(rapsheet, Rapsheet))
-        assert(type(messages) == type([]))
+
+        messages = []
 
         current_node = self.start_node
         while(current_node != None and len(self.graph[current_node]) > 0):
+            current_message = current_node.message
+            if current_message != "":
+                messages.append(current_message)
             current_node = self.step(crime, rapsheet, current_node)
-            if(current_node != None and current_node.messages):
-                messages.append(current_node.messages)
+            """if(current_node != None and current_node.message):
+                messages.append(current_node.message)"""
         return (current_node, messages)
 
     """
@@ -146,30 +150,25 @@ class RuleSet:
         self.start_node = start_node
 
         prison = RuleSetNode(next(node_counter), "Prison")
-        file_cr180_misdemeanor = RuleSetNode(next(node_counter), "File CR-180 Misdemeanor")
+        file_cr180_misdemeanor = RuleSetNode(next(node_counter), "File CR-180 Misdemeanor", message = "File CR-180 Misdemeanor")
         not_prop_47_64_elig = RuleSetNode(next(node_counter), "Not Prop 47 Eligible")
         ab_109_discretionary = RuleSetNode(next(node_counter), "Discretionary")
         ab_109_options = RuleSetNode(next(node_counter), """Misdemeanor: NO
         probation, must wait one year. YES probation, see above\n Felony: Refer
         to L.A. Public Defender for \"Certificate of Rehabilitation\"""")
-        public_defender = RuleSetNode(next(node_counter), "LA Public Defender: (213) 974-3057")
+        no_probation = RuleSetNode(next(node_counter), "NO probation", message = "Must wait 1 year")
+        public_defender = RuleSetNode(next(node_counter), "LA Public Defender: (213) 974-3057", message = "Refer to L.A. Public Defender for \"Certificate of Rehabilitation\": (213) 974-3057")
         county_jail_ab_109 = RuleSetNode(next(node_counter), "COUNTY JAIL AB109")
-        jail_only = RuleSetNode(next(node_counter), """Jail Only, NO mandatory
-        supervision. Must wait 2 years after release date to apply under 1203.41""")
-        jail_and_supervision = RuleSetNode(next(node_counter), """Jail and mandatory
-        supervision - must wait 1 year to apply under 1203.41""")
+        jail_only = RuleSetNode(next(node_counter), "Jail Only, NO mandatory supervision.", message = "Must wait 2 years after release date to apply under 1203.41")
+        jail_and_supervision = RuleSetNode(next(node_counter), "Jail and mandatory supervision", message = "Must wait 1 year to apply under 1203.41")
 
         probation = RuleSetNode(next(node_counter), "Probation")
-        probation_completion = RuleSetNode(next(node_counter), """Successful completion
-        of probation (Mandatory)""")
-        probation_early_termination = RuleSetNode(next(node_counter), """Early
-        termination of probation (Mandatory)""")
+        probation_compl_or_early_term = RuleSetNode(next(node_counter), "Mandatory")
         probation_discretionary = RuleSetNode(next(node_counter), "Discretionary")
 
         up_to_1_year = RuleSetNode(next(node_counter), "Up to 1 year in county jail")
         code_1203_point4a = RuleSetNode(next(node_counter), "1203.4a")
-        one_year_from_conviction_date = RuleSetNode(next(node_counter), """1 year
-        from conviction date""")
+        one_year_from_conviction_date = RuleSetNode(next(node_counter), "1 year from conviction date")
         convicted_discretionary = RuleSetNode(next(node_counter), "Discretionary")
         convicted_mandatory = RuleSetNode(next(node_counter), "Mandatory")
         convicted_not_eligible = RuleSetNode(next(node_counter), "Not eligible")
@@ -200,7 +199,11 @@ class RuleSet:
         graph[ab_109_options] = [
             (public_defender, isFelony),
             (probation, lambda x, y: isMisdemeanor(x, y) and isProbation(x, y)),
-            (code_1203_point4a, lambda x, y: isMisdemeanor(x, y) and not isProbation(x, y))
+            (no_probation, lambda x, y: isMisdemeanor(x, y) and not isProbation(x, y))
+        ]
+
+        graph[no_probation] = [
+            (code_1203_point4a, lambda x, y: True)
         ]
 
         graph[public_defender] = []
@@ -214,12 +217,10 @@ class RuleSet:
         graph[jail_and_supervision] = []
 
         graph[probation] = [
-            (probation_completion, isProbationCompletion),
-            (probation_early_termination,  isEarlyTermination),
+            (probation_compl_or_early_term, lambda x, y: isProbationCompletion(x, y) or isEarlyTermination(x, y)),
             (probation_discretionary, lambda x, y: not (isProbationCompletion(x, y) and isEarlyTermination(x, y)))
         ]
-        graph[probation_completion] = []
-        graph[probation_early_termination] = []
+        graph[probation_compl_or_early_term] = []
         graph[probation_discretionary] = []
 
         graph[up_to_1_year] = [(code_1203_point4a,  lambda x, y: True)]
