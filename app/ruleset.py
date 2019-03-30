@@ -149,6 +149,8 @@ class RuleSet:
             current_node = self.step(crime, rapsheet, current_node)
             """if(current_node != None and current_node.message):
                 messages.append(current_node.message)"""
+
+        print(current_node.name, messages)
         return (current_node, messages)
 
     """
@@ -211,7 +213,7 @@ class RuleSet:
             (not_prop_47_64_elig, notInPropCodes)
         ]
 
-        graph[file_cr180_misdemeanor] = [(code_1203_point4a,  True)]
+        graph[file_cr180_misdemeanor] = [(code_1203_point4a,  lambda x, y: True)]
 
         graph[not_prop_47_64_elig] = [
             (ab_109_discretionary, isAB109Elig),
@@ -268,3 +270,14 @@ class RuleSet:
         graph[convicted_not_eligible] = []
 
         self.graph = graph
+
+
+c = Crime("Felony", "Prison", None, None, "487", "Not Completed")
+given = Rapsheet(
+[
+    c
+])
+
+rs = RuleSet()
+g = rs.createGraph()
+rs.evaluate(c, given)
