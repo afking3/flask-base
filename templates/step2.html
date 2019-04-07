@@ -25,6 +25,7 @@
     <p class="key"><img class="icon" src="../static/images/popupicon.png">Click the pop-up icon to view the text as it appears in your file.</p>
     <p class="key"><img class="icon" src="../static/images/editicon.png">Click the pen icon to manually edit the field</p>
   </div>
+
   <table>
     <tr>
       <th>CRIME NAME</th>
@@ -33,40 +34,22 @@
       <th>View</th>
       <th>Edit</th>
     </tr>
+
+    {% for d in data %}
     <tr>
-      <td><div class="clickedit" contenteditable="false">data</div></td>
-      <td><div class="clickedit" contenteditable="false">data</div></td>
-      <td><div class="clickedit" contenteditable="false">data</div></td>
-      <td><img class="view iconbutton" src="../static/images/popupicon.png"></td>
-      <td>
-          <img class="edit iconbutton" src="../static/images/editicon.png"></td>
-    </tr>
-    <tr>
-      <td>data</td>
-      <td>data</td>
-      <td>data</td>
+      <td><div class="clickedit" contenteditable="false">{{ d.name }}</div></td>
+      <td><div class="clickedit" contenteditable="false">{{ d['location'] }}</div></td>
+      <td><div class="clickedit" contenteditable="false">{{ d['date'] }}</div></td>
       <td><img class="view iconbutton" src="../static/images/popupicon.png"></td>
       <td><img class="edit iconbutton" src="../static/images/editicon.png"></td>
     </tr>
-    <tr>
-      <td>data</td>
-      <td>data</td>
-      <td>data</td>
-      <td><img class="view iconbutton" src="../static/images/popupicon.png"></td>
-      <td><img class="edit iconbutton" src="../static/images/editicon.png"></td>
-    </tr>
-    <tr>
-      <td>data</td>
-      <td>data</td>
-      <td>data</td>
-      <td><img class="view iconbutton" src="../static/images/popupicon.png"></td>
-      <td><img class="edit iconbutton" src="../static/images/editicon.png"></td>
-    </tr>
+    {% endfor %}
+
   </table>
   <div>
     <div id="buttons">
-      <p class="button2"><a href="step1.html">Back</a></p>
-      <p class="button2"><a href="step3.html">Next<a></p>
+      <p class="button2"><a href="{{ back }}">Back</a></p>
+      <p class="button2"><a href="{{ next }}">Next<a></p>
     <div>
 </body>
 </html>

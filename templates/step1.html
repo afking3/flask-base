@@ -32,15 +32,15 @@
            <input id="buttonid" type="button" value="File Upload" />
            <input type="submit" value="Submit" />
        </form> -->
-    <p class="button reupload"><a href="http://www.nlsla.org/">Reupload File</a></p>
+    <p class="button reupload"><a href="{{ reupload }}">Reupload File</a></p>
 
     </div>
 <!--     <embed src="{{ filepath }}" width="600" height="500" alt="pdf" pluginspage="http://www.adobe.com/products/acrobat/readstep2.html"> -->
     <iframe src="{{ url_for('uploaded_file', filename=filename) }}"></iframe>
   </div>
   <div id="buttons">
-    <p class="button2"><a href="index.html">Back</a></p>
-    <p class="button2"><a href="step2.html">Next<a></p>
+    <p class="button2"><a href="{{ back }}">Back</a></p>
+    <p class="button2"><a href="{{ next }}">Next<a></p>
   <div>
 </body>
 </html>

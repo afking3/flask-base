@@ -36,34 +36,17 @@
       <th>DATE</th>
       <th> </th>
     </tr>
+
+    {% for d in data %}
     <tr>
-      <td>data</div></td>
-      <td>data</div></td>
-      <td>data</div></td>
-      <td>data</div></td>
+      <td>{{ d.expungement }}</td>
+      <td>{{ d.name }}</td>
+      <td>{{d.location}}</td>
+      <td>{{d.date}}</td>
       <td class="details">Details</td>
     </tr>
-    <tr>
-      <td>data</div></td>
-      <td>data</div></td>
-      <td>data</div></td>
-      <td>data</div></td>
-      <td class="details">Details</td>
-    </tr>
-    <tr>
-      <td>data</div></td>
-      <td>data</div></td>
-      <td>data</div></td>
-      <td>data</div></td>
-      <td class="details">Details</td>
-    </tr>
-    <tr>
-      <td>data</div></td>
-      <td>data</div></td>
-      <td>data</div></td>
-      <td>data</div></td>
-      <td class="details">Details</td>
-    </tr>
+    {% endfor %}
+   
   </table>
   <div id="buttons">
     <p onclick="myFunction()" id="print_button">Print Results</p>
@@ -71,8 +54,8 @@
   </div>
 
   <div id="buttons">
-    <p class="button2"><a href="step2.html">Back</a></p>
-    <p class="button2"><a href="final.html">Next<a></p>
+    <p class="button2"><a href="{{ back }}">Back</a></p>
+    <p class="button2"><a href="{{ next  }}">Next<a></p>
   </div>
 </body>
 </html>
