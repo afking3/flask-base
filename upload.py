@@ -19,6 +19,11 @@ def allowed_file(filename):
 def index():
     return  render_template("index.html", link="/upload")
 
+
+@app.route('/<page>')
+def next(page):
+    return  render_template(page)
+
 # @app.route('/')
 # @app.route('/index')
 # def index():
@@ -45,15 +50,8 @@ def upload_file():
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             return redirect(url_for('show',
                                     filename=filename))
-    return '''
-    <!doctype html>
-    <title>Upload new File</title>
-    <h1>Upload new File</h1>
-    <form method=post enctype=multipart/form-data>
-      <input type=file name=file>
-      <input type=submit value=Upload>
-    </form>
-    '''
+    return render_template('upload.html')
+
 
 
 
@@ -76,6 +74,23 @@ def show(filename):
 #     filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
 #     print(os.listdir(app.config['UPLOAD_FOLDER']))
     # filepath = app.config['UPLOAD_FOLDER'] + "/"+ filename
+    if request.method == 'POST':
+        # check if the post request has the file part
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+        file = request.files['file']
+        # if user does not select file, browser also
+        # submit an empty part without filename
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            return redirect(url_for('show',
+                                    filename=filename))
+
     return render_template('step1.html', filename=filename)
 
 @app.route('/uploads/<filename>')
@@ -88,7 +103,10 @@ def uploaded_file(filename):
 #     filename = UPLOAD_FOLDER + filename
 #     return render_template('step1.html', filename=filename)
 
-
 if __name__== "__main__":
 	# db.create_all() #do only once
-	app.run()
+    app.secret_key = b'486995feb1ce1b4d2e282a6b31cb3bfbd90ef8ce33713783'    
+    app.config['SESSION_TYPE'] = 'filesystem'
+    app.run()
+
+
