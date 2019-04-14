@@ -168,17 +168,17 @@ class RuleSet:
         self.start_node = start_node
 
         prison = RuleSetNode(next(node_counter), "Prison")
-        file_cr180_misdemeanor = RuleSetNode(next(node_counter), "File CR-180 Misdemeanor", message = "File CR-180 Misdemeanor")
+        file_cr180_misdemeanor = RuleSetNode(next(node_counter), "File CR-180 Misdemeanor", message = CR180)
         not_prop_47_64_elig = RuleSetNode(next(node_counter), "Not Prop 47 Eligible")
         ab_109_discretionary = RuleSetNode(next(node_counter), DISCRETIONARY)
         ab_109_options = RuleSetNode(next(node_counter), """Misdemeanor: NO
         probation, must wait one year. YES probation, see above\n Felony: Refer
         to L.A. Public Defender for \"Certificate of Rehabilitation\"""")
-        no_probation = RuleSetNode(next(node_counter), "NO probation", message = "Must wait 1 year")
-        public_defender = RuleSetNode(next(node_counter), "LA Public Defender: (213) 974-3057", message = "Refer to L.A. Public Defender for \"Certificate of Rehabilitation\": (213) 974-3057")
+        no_probation = RuleSetNode(next(node_counter), "NO probation", message = WAIT_1_YEAR)
+        public_defender = RuleSetNode(next(node_counter), "LA Public Defender: (213) 974-3057", message = PUBLIC_DEFENDER)
         county_jail_ab_109 = RuleSetNode(next(node_counter), "COUNTY JAIL AB109")
-        jail_only = RuleSetNode(next(node_counter), "Jail Only, NO mandatory supervision.", message = "Must wait 2 years after release date to apply under 1203.41")
-        jail_and_supervision = RuleSetNode(next(node_counter), "Jail and mandatory supervision", message = "Must wait 1 year to apply under 1203.41")
+        jail_only = RuleSetNode(next(node_counter), "Jail Only, NO mandatory supervision.", message = WAIT_2_YEARS)
+        jail_and_supervision = RuleSetNode(next(node_counter), "Jail and mandatory supervision", message = WAIT_1_YEAR_1203)
 
         probation = RuleSetNode(next(node_counter), "Probation")
         probation_compl_or_early_term = RuleSetNode(next(node_counter), "Mandatory")
