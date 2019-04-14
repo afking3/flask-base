@@ -1,6 +1,5 @@
-#import from all the other files
-
-
+import ruleset
+#import rapsheet
 
 ''' 
 Outputs a tuple of the rapsheet and results
@@ -19,10 +18,12 @@ Outputs a tuple of the rapsheet and results
 
     would return (rapsheet, results)
 '''
-def getOutputFromRapsheet(rapsheet):
-
-    #vision = GOOGLEVISION(rapsheet)
-    #     
+def getOutputFromRapsheet(rap):
+    #json = detect_document(rap)
+    #rapsheet = parse_document(json)
+    #rules = ruleset.RuleSet()
+    #rapsheet_results = rules.resultsFromRapSheet(rapsheet)
+    #return (rapsheet, rapsheet_results)
 
 ''' 
 Given an input (rapsheer, results), 
