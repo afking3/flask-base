@@ -175,6 +175,7 @@ class RuleSet:
         no_probation = RuleSetNode(next(node_counter), NO_PROBATION, message = WAIT_1_YEAR)
         public_defender = RuleSetNode(next(node_counter), LA_PUB_DEF, message = PUBLIC_DEFENDER)
         county_jail_ab_109 = RuleSetNode(next(node_counter), COUNTY_JAIL)
+        county_jail_discretionary = RuleSetNode(next(node_counter), DISCRETIONARY, message = COUNTY_JAIL_DISC)
         jail_only = RuleSetNode(next(node_counter), JAIL_ONLY, message = WAIT_2_YEARS)
         jail_and_supervision = RuleSetNode(next(node_counter), JAIL_AND_SUPE, message = WAIT_1_YEAR_1203)
 
@@ -238,7 +239,7 @@ class RuleSet:
         # ]
 
         graph[county_jail_ab_109] = [
-            (discretionary, lambda x, y: True)
+            (county_jail_discretionary, lambda x, y: True)
         ]
 
         graph[jail_only] = []

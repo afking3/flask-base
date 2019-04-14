@@ -23,6 +23,8 @@ def assertResults(rapsheet, list_of_expected):
         assert result["messages"] == expected_result[0]
         assert result["result"] == expected_result[1]
 
+
+#path 1
 def test_infraction_not_eligible():
     given = rs.Rapsheet(
         [
@@ -34,6 +36,7 @@ def test_infraction_not_eligible():
 
     assertResults(given, expected)
 
+#path 2
 def test_infraction_mandatory():
     given = rs.Rapsheet(
         [
@@ -44,6 +47,7 @@ def test_infraction_mandatory():
     ]
     assertResults(given, expected)
 
+#path 3
 def test_infraction_discretionary():
     given = rs.Rapsheet(
         [
@@ -57,6 +61,7 @@ def test_infraction_discretionary():
     ]
     assertResults(given, expected)
 
+#path 4
 def test_misdemeanor_discretionary():
     given = rs.Rapsheet(
         [
@@ -69,6 +74,7 @@ def test_misdemeanor_discretionary():
     ]
     assertResults(given, expected)
 
+#path 5
 def test_misdemeanor_mandatory():
     given = rs.Rapsheet(
         [
@@ -79,6 +85,7 @@ def test_misdemeanor_mandatory():
     ]
     assertResults(given, expected)
 
+#path 6
 def test_misdemeanor_not_eligible():
     given = rs.Rapsheet(
         [
@@ -89,6 +96,7 @@ def test_misdemeanor_not_eligible():
     ]
     assertResults(given, expected)
 
+#path 7
 def test_misdemeanor_mandatory2():
     given = rs.Rapsheet(
         [
@@ -99,6 +107,7 @@ def test_misdemeanor_mandatory2():
     ]
     assertResults(given, expected)
 
+#path 8
 def test_misdemeanor_mandatory3():
     given = rs.Rapsheet(
         [
@@ -109,6 +118,7 @@ def test_misdemeanor_mandatory3():
     ]
     assertResults(given, expected)
 
+#path 9
 def test_misdemeanor_mandatory4():
     given = rs.Rapsheet(
         [
@@ -119,6 +129,7 @@ def test_misdemeanor_mandatory4():
     ]
     assertResults(given, expected)
 
+#path 10
 def test_felony_mandatory2():
     given = rs.Rapsheet(
         [
@@ -129,6 +140,7 @@ def test_felony_mandatory2():
     ]
     assertResults(given, expected)
 
+#path 11
 def test_felony_mandatory3():
     given = rs.Rapsheet(
         [
@@ -139,7 +151,7 @@ def test_felony_mandatory3():
     ]
     assertResults(given, expected)
 
-
+#path 12
 def test_felony_discr():
     given = rs.Rapsheet(
         [
@@ -150,6 +162,7 @@ def test_felony_discr():
     ]
     assertResults(given, expected)
 
+#path 13
 def test_felony_county_discr():
     given = rs.Rapsheet(
         [
@@ -160,6 +173,7 @@ def test_felony_county_discr():
     ]
     assertResults(given, expected)
 
+#path 14
 def test_felony_prop_elig1():
     given = rs.Rapsheet(
     [
@@ -170,6 +184,7 @@ def test_felony_prop_elig1():
     ]
     assertResults(given, expected)
 
+#path 15
 def test_felony_prop_elig2():
     given = rs.Rapsheet(
     [
