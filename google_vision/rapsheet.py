@@ -20,16 +20,26 @@ class Rapsheet(object):
 
 
 class Crime(object):
+    date = None
+    offense_code = ""
+    offense_description = ""
+    dispo = ""
     def __init__(self):
         pass
     
-    def set_type(self, ctype):
-        self.crime_type = ctype
+    def set_offense_code(self, ccode):
+        self.offense_code = ccode
 
-    def set_result(self, result):
-        self.result = result
+    def set_offense_description(self, description):
+        self.offense_description = description
+
+    def set_dispo(self, dispo):
+        self.dispo = dispo
     
-    #Sets date. Takes a rapsheet-formatted date (yyyymmdd)
-    #def
+    def set_date(self, date):
+        year = date[0:3]
+        month  = date[4:6]
+        day = date[7:]
+        self.date = datetime.date(int(year), int(month), int(day))
     
     

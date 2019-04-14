@@ -9,7 +9,11 @@ substitute_costs = np.full((128, 128),10, dtype=np.float64)
 #Need to duplicate each rule so that A-B cost is same as B-A cost
 substitute_costs[ord('I'), ord('1')] = 1.0  
 substitute_costs[ord('S'), ord('5')] = 1.0
-substitute_costs[ord('O'), ord('0')] = 1.0
+
+substitute_costs[ord('O'), ord('0')] = 0.5
+substitute_costs[ord('0'), ord('O')] = 0.5
+
+
 substitute_costs[ord('N'), ord('H')] = 0.5
 substitute_costs[ord('H'), ord('N')] = 0.5
 

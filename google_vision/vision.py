@@ -1,7 +1,9 @@
 import io
 import os
 import json
-from rapsheet import Rapsheet
+import re
+import time
+from rapsheet import Rapsheet, Crime
 import file_handling
 import word_similarity
 from google.oauth2 import service_account
@@ -25,6 +27,7 @@ def get_words(response):
                 line = ""
                 token = ""
                 for word in paragraph.words:
+                    print(word.bounding_box)
                     for symbol in word.symbols:
                         token += symbol.text
                         if symbol.property.detected_break.type in [breaks.SPACE, breaks.EOL_SURE_SPACE, breaks.LINE_BREAK]:
@@ -34,6 +37,8 @@ def get_words(response):
 
 def get_response(image):
     img = vision.types.Image(content=image)
+
+
     return CLIENT.document_text_detection(image=img)
 
 
@@ -187,6 +192,39 @@ def getDate(dateString):
 
     return None
 
+def matches(word1, word2):
+    return word1 == word or word_similarity.check_word_against_term(word1, word2)
+
+
+"""Simplifies getting a list of crimes for a single citation
+Returns index, crime list"""
+def get_crimes(index, word_list):
+    #index is the index of "Court:"    
+    crimes = []
+    
+    while((re.match("[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]", word_list[index]) is None) or matches(word_list[index-1], 'DOB')):
+        index += 1
+
+    date = word_list[index]
+    
+    while (word_list[index] != 'ARR/DET/CITE:' and word_similarity.check_word_against_term(word_list[index], 'ARR/DET/CITE:')): 
+        if matches(word_list[index], 'CNT'):
+            crime = Crime()
+            crime.set_date(date)
+            index = word_list.index("_newline", index)+1 #at offense code
+            crime.set_offense_code(word_list[index])
+            crime_desc = ""
+            while (word_list[index] != "_newline"):
+                crime_desc += "" if 'TOC:' in word_list[index] else word_list[index]
+                index += 1
+            crime.set_offense_description = crime_desc
+
+
+
+
+    
+
+
 def parse_document(filename):
     entire_doc = []
     imgs = file_handling.open_file(filename)
@@ -194,16 +232,28 @@ def parse_document(filename):
         entire_doc += get_words(get_response(img))
     entire_doc = [x.encode('UTF-8') for x in entire_doc]
 
+    cleaned_doc = []
+    for word in entire_doc:
+        cleaned_doc += (word.split(':'))
+    cleaned_doc = filter(lambda a: a != '', cleaned_doc)
+
+    print(cleaned_doc)
+
     rapsheet = Rapsheet()
 
-    for i in range(len(entire_doc)):
-        if entire_doc[i] == 'NAM/001' or word_similarity.check_word_against_term(entire_doc[i], 'NAM/001'):
-            rapsheet.set_name(entire_doc[i+1] + " " + entire_doc[i+2])   
+    i = 0
+    while i < len(entire_doc):
+        if len(entire_doc[i]) == len('NAM/001') and (entire_doc[i] == 'NAM/001' or word_similarity.check_word_against_term(entire_doc[i], 'NAM/001')):
+            rapsheet.set_name(entire_doc[i+1] + " " + entire_doc[i+2])
+
+        if (len(entire_doc[i]) == len('COURT:') and (entire_doc[i] == 'COURT:' or word_similarity.check_word_against_term(entire_doc[i], 'COURT'))):
+            ind, crimes = get_crimes(i, entire_doc)
+
+        i += 1
+ 
     print(rapsheet.name)
 
         
 if __name__ == "__main__":
     parse_document("sample rap sheet.pdf")
 
-# info={'Crimes':{}}
-# detect_document(r"images/Sample RAP Sheet-rotated-3.jpg", info)
