@@ -164,42 +164,40 @@ class RuleSet:
         node_counter = self.getUniqueId()
         #edge_counter = self.getUniqueId()
 
-        start_node = RuleSetNode(next(node_counter), "Start")
+        start_node = RuleSetNode(next(node_counter), START)
         self.start_node = start_node
 
-        prison = RuleSetNode(next(node_counter), "Prison")
-        file_cr180_misdemeanor = RuleSetNode(next(node_counter), "File CR-180 Misdemeanor", message = CR180)
-        not_prop_47_64_elig = RuleSetNode(next(node_counter), "Not Prop 47 Eligible")
+        prison = RuleSetNode(next(node_counter), PRISON)
+        file_cr180_misdemeanor = RuleSetNode(next(node_counter), CR180, message = CR180)
+        not_prop_47_64_elig = RuleSetNode(next(node_counter), NOT_47_ELIGIBLE)
         ab_109_discretionary = RuleSetNode(next(node_counter), DISCRETIONARY)
-        ab_109_options = RuleSetNode(next(node_counter), """Misdemeanor: NO
-        probation, must wait one year. YES probation, see above\n Felony: Refer
-        to L.A. Public Defender for \"Certificate of Rehabilitation\"""")
-        no_probation = RuleSetNode(next(node_counter), "NO probation", message = WAIT_1_YEAR)
-        public_defender = RuleSetNode(next(node_counter), "LA Public Defender: (213) 974-3057", message = PUBLIC_DEFENDER)
-        county_jail_ab_109 = RuleSetNode(next(node_counter), "COUNTY JAIL AB109")
-        jail_only = RuleSetNode(next(node_counter), "Jail Only, NO mandatory supervision.", message = WAIT_2_YEARS)
-        jail_and_supervision = RuleSetNode(next(node_counter), "Jail and mandatory supervision", message = WAIT_1_YEAR_1203)
+        ab_109_options = RuleSetNode(next(node_counter), AB_109_OPTIONS)
+        no_probation = RuleSetNode(next(node_counter), NO_PROBATION, message = WAIT_1_YEAR)
+        public_defender = RuleSetNode(next(node_counter), LA_PUB_DEF, message = PUBLIC_DEFENDER)
+        county_jail_ab_109 = RuleSetNode(next(node_counter), COUNTY_JAIL)
+        jail_only = RuleSetNode(next(node_counter), JAIL_ONLY, message = WAIT_2_YEARS)
+        jail_and_supervision = RuleSetNode(next(node_counter), JAIL_AND_SUPE, message = WAIT_1_YEAR_1203)
 
-        probation = RuleSetNode(next(node_counter), "Probation")
-        probation_compl_or_early_term = RuleSetNode(next(node_counter), "Mandatory")
-        probation_discretionary = RuleSetNode(next(node_counter), "Discretionary")
+        probation = RuleSetNode(next(node_counter), PROBATION)
+        probation_compl_or_early_term = RuleSetNode(next(node_counter), MANDATORY)
+        probation_discretionary = RuleSetNode(next(node_counter), DISCRETIONARY)
 
-        up_to_1_year = RuleSetNode(next(node_counter), "Up to 1 year in county jail")
-        code_1203_point4a = RuleSetNode(next(node_counter), "1203.4a")
-        one_year_from_conviction_date = RuleSetNode(next(node_counter), "1 year from conviction date")
-        convicted_discretionary = RuleSetNode(next(node_counter), "Discretionary")
-        convicted_mandatory = RuleSetNode(next(node_counter), "Mandatory")
-        convicted_not_eligible = RuleSetNode(next(node_counter), "Not Eligible")
+        up_to_1_year = RuleSetNode(next(node_counter), UP_TO_1_YEAR)
+        code_1203_point4a = RuleSetNode(next(node_counter), CODE_1203POINT4A)
+        one_year_from_conviction_date = RuleSetNode(next(node_counter), ONE_YEAR_FROM)
+        convicted_discretionary = RuleSetNode(next(node_counter), DISCRETIONARY)
+        convicted_mandatory = RuleSetNode(next(node_counter), MANDATORY)
+        convicted_not_eligible = RuleSetNode(next(node_counter), NOT_ELIGIBLE)
 
-        discretionary = RuleSetNode(next(node_counter), "Discretionary")
-        mandatory = RuleSetNode(next(node_counter), "Mandatory")
-        not_eligible = RuleSetNode(next(node_counter), "Not Eligible")
+        discretionary = RuleSetNode(next(node_counter), DISCRETIONARY)
+        mandatory = RuleSetNode(next(node_counter), MANDATORY)
+        not_eligible = RuleSetNode(next(node_counter), NOT_ELIGIBLE)
 
         graph[discretionary] = []
         graph[mandatory] = []
         graph[not_eligible] = []
 
-        fine = RuleSetNode(next(node_counter), "Fine")
+        fine = RuleSetNode(next(node_counter), FINE)
 
         graph[start_node] = [   #create all these helper functions
             (prison, isPrison),
