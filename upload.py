@@ -1,4 +1,5 @@
 import os
+import json
 import flask
 from flask import Flask, flash, request, redirect, url_for, render_template, send_from_directory, make_response
 from werkzeug.utils import secure_filename
@@ -9,6 +10,29 @@ ALLOWED_EXTENSIONS = set(['pdf'])
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+crimes = [
+    {
+        "id": 1,
+        "expungement": "felony",
+        "name": "Tom",
+        "location": "Los Angeles",
+        "date": "2018-01-01"
+    },
+    {
+        "id": 2,
+        "expungement": "felony",
+        "name": "Jerry",
+        "location": "Los Angeles",
+        "date": "2018-02-02"
+    },
+    {
+        "id": 3,
+        "expungement": "infraction",
+        "name": "Spike",
+        "location": "Los Angeles",
+        "date": "2018-03-03"
+    }
+]
 
 
 def allowed_file(filename):
@@ -30,7 +54,13 @@ def next(page):
 #     user = {'username': 'Miguel'}
 #     return render_template('index.html', title='Home', user=user)
 
+@app.route('/review', methods=['GET', 'POST'])
+def review():
+    return render_template("step2.html", data=crimes, back="/upload", next="/download")
 
+@app.route('/download')
+def download():
+    return render_template("step3.html", data=crimes, back="/review", next="/download")
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
@@ -50,7 +80,7 @@ def upload_file():
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             return redirect(url_for('show',
                                     filename=filename))
-    return render_template('upload.html')
+    return render_template('upload.html', back="/", next="/review")
 
 
 
@@ -69,7 +99,7 @@ def upload_file():
 # def show_pdf(id=None):
 #     if id is not None:
 #         return render_template('doc.html', doc_id=id)
-@app.route('/show/<filename>')
+@app.route('/show/<filename>', methods=['GET', 'POST'])
 def show(filename):
 #     filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
 #     print(os.listdir(app.config['UPLOAD_FOLDER']))
@@ -91,7 +121,8 @@ def show(filename):
             return redirect(url_for('show',
                                     filename=filename))
 
-    return render_template('step1.html', filename=filename)
+    return render_template('step1.html', reupload="/upload", back="/", next="/review", filename=filename)
+
 
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
