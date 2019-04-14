@@ -25,6 +25,6 @@ DISCRETIONARY = "Discretionary"
 CR180 = "File CR-180 Misdemeanor"
 WAIT_1_YEAR = "Must wait 1 year"
 PUBLIC_DEFENDER = "Refer to L.A. Public Defender for \"Certificate of Rehabilitation\": (213) 974-3057"
-COUNTY_JAIL_DISC = "Jail and Mandatory Supervision: " + WAIT_2_YEARS + "\nJail Only, NO Mandatory Supervision: " + WAIT_1_YEAR_1203
 WAIT_2_YEARS = "Must wait 2 years after release date to apply under 1203.41"
 WAIT_1_YEAR_1203 = "Must wait 1 year to apply under 1203.41"
+COUNTY_JAIL_DISC = "Jail and Mandatory Supervision: " + WAIT_2_YEARS + "\nJail Only, NO Mandatory Supervision: " + WAIT_1_YEAR_1203

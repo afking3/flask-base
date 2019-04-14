@@ -142,15 +142,18 @@ class RuleSet:
         messages = []
 
         current_node = self.start_node
-        while(current_node != None and len(self.graph[current_node]) > 0):
+        while current_node != None and len(self.graph[current_node]) > 0:
             current_message = current_node.message
             if current_message != "":
+                print(current_node.name, current_message)
                 messages.append(current_message)
             current_node = self.step(crime, rapsheet, current_node)
-            """if(current_node != None and current_node.message):
-                messages.append(current_node.message)"""
 
-        print(current_node.name, messages)
+        current_message = current_node.message
+        if current_message != "":
+            print(current_node.name, current_message)
+            messages.append(current_message)
+
         return (current_node, messages)
 
     """
@@ -241,6 +244,7 @@ class RuleSet:
         graph[county_jail_ab_109] = [
             (county_jail_discretionary, lambda x, y: True)
         ]
+        graph[county_jail_discretionary] = []
 
         graph[jail_only] = []
         graph[jail_and_supervision] = []

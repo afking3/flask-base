@@ -3,6 +3,7 @@ sys.path.insert(0, '../')
 import ruleset as rs
 import datetime
 from dateutil.relativedelta import relativedelta
+from messages import *
 
 now = datetime.datetime.now()
 week_ago = now - datetime.timedelta(days=7)
@@ -169,7 +170,7 @@ def test_felony_county_discr():
             rs.Crime("Felony", "County Jail", week_ago, "non_violent, non_serious", None, "Not Completed"),
         ])
     expected = [
-        [[], "Discretionary"],
+        [[COUNTY_JAIL_DISC], "Discretionary"],
     ]
     assertResults(given, expected)
 
