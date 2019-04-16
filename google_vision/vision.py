@@ -198,12 +198,12 @@ def detect_document():
 
 
 
-                    
+                  
     info['Courts']=Courts
     
     info=json.dumps(info)
     parsed = json.loads(info)
-    print(json.dumps(parsed, indent=4, sort_keys=True))
+    json.dumps(parsed, indent=4, sort_keys=True)
     # print(info)
     return info
     #print(lines)
