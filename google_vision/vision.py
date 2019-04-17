@@ -8,38 +8,15 @@ import file_handling
 import word_similarity
 from google.oauth2 import service_account
 from google.cloud import vision
+from sort import wordBoxSort
 
 
 CREDENTIALS = service_account.Credentials.from_service_account_file('NLSLA Re-entry-88f1acf99097.json')
 
 CLIENT = vision.ImageAnnotatorClient(credentials=CREDENTIALS)
 
-"""
-Outputs the response from google vision as a list of words.
-"""
-def get_words(response):
-    breaks = vision.enums.TextAnnotation.DetectedBreak.BreakType
-    tokens = []
-    for page in response.full_text_annotation.pages:
-        for block in page.blocks:
-            for paragraph in block.paragraphs:
-                para = ""
-                line = ""
-                token = ""
-                for word in paragraph.words:
-                    print(word.bounding_box)
-                    for symbol in word.symbols:
-                        token += symbol.text
-                        if symbol.property.detected_break.type in [breaks.SPACE, breaks.EOL_SURE_SPACE, breaks.LINE_BREAK]:
-                            tokens.append(token)
-                            token = ""
-    return tokens
-
-def get_response(image):
-    img = vision.types.Image(content=image)
 
 
-    return CLIENT.document_text_detection(image=img)
 
 
 def detect_document():
@@ -192,8 +169,62 @@ def getDate(dateString):
 
     return None
 
+"""
+ **************************
+ NEW STUFF
+***************************
+"""
+
+"""
+Outputs the response from google vision as a list of words.
+"""
+def get_words(response):
+    breaks = vision.enums.TextAnnotation.DetectedBreak.BreakType
+    tokens = []
+    for page in response.full_text_annotation.pages:
+        for block in page.blocks:
+            for paragraph in block.paragraphs:
+                para = ""
+                line = ""
+                token = ""
+                for word in paragraph.words:
+                    for symbol in word.symbols:
+                        token += symbol.text
+                        if symbol.property.detected_break.type in [breaks.SPACE, breaks.EOL_SURE_SPACE, breaks.LINE_BREAK]:
+                            tokens.append(token)
+                            token = ""
+    return tokens
+
+def getBoundBoxes(response):
+    tokens = []
+    for page in response.full_text_annotation.pages:
+        for block in page.blocks:
+            for paragraph in block.paragraphs:
+                para = ""
+                line = ""
+                token = ""
+                for word in paragraph.words:
+                    #print(word.bounding_box)
+                    tokens.append(word)
+    return tokens
+
+def getWordFromBox(box):
+    breaks = vision.enums.TextAnnotation.DetectedBreak.BreakType
+    token=""
+    for symbol in box.symbols:
+        token += symbol.text
+        if symbol.property.detected_break.type in [breaks.SPACE, breaks.EOL_SURE_SPACE, breaks.LINE_BREAK]:
+            return token
+
+
+def get_response(image):
+    img = vision.types.Image(content=image)
+
+
+    return CLIENT.document_text_detection(image=img)
+
 def matches(word1, word2):
-    return word1 == word or word_similarity.check_word_against_term(word1, word2)
+    return word1 == word2 or word_similarity.check_word_against_term(word1, word2)
 
 
 """Simplifies getting a list of crimes for a single citation
@@ -222,15 +253,48 @@ def get_crimes(index, word_list):
 
 
 
-    
+"""
+Takes in a list of words sorted by y-position and converts into lines
 
+"""
+def sepIntoLines (words):
+    lines=[]
+    line=[]
+    lastY=words[0].bounding_box.vertices[3].y
+    for word in words:
+        if word is not None:
+            currY=word.bounding_box.vertices[3].y
+            if abs(currY - lastY )> 30:
+                lines.append(line)
+                line=[]
+            
+            # str_word is the string form of box
+            str_word=getWordFromBox(word)
+            if str_word is not None:
+                line.append(str_word)
+            lastY=currY
+    if(len(line) > 0):
+        lines.append(line)
+    return lines
 
 def parse_document(filename):
     entire_doc = []
     imgs = file_handling.open_file(filename)
     for img in imgs:
-        entire_doc += get_words(get_response(img))
-    entire_doc = [x.encode('UTF-8') for x in entire_doc]
+        boxes=getBoundBoxes(get_response(img))
+        wordBoxSort(boxes)
+        entire_doc +=boxes 
+    entire_doc=sepIntoLines(entire_doc)
+
+    for line in entire_doc:
+        for word in line:
+            if type(word)==str:
+                word=word.encode('UTF-8')
+
+    print(entire_doc)
+
+
+    
 
     cleaned_doc = []
     for word in entire_doc:
@@ -250,10 +314,9 @@ def parse_document(filename):
             ind, crimes = get_crimes(i, entire_doc)
 
         i += 1
- 
+
     print(rapsheet.name)
 
-        
+
 if __name__ == "__main__":
     parse_document("sample rap sheet.pdf")
-

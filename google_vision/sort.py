@@ -39,14 +39,15 @@ def quickSort(arr,low,high, comparator):
         quickSort(arr, pi+1, high, comparator) 
 
 def wordBoxCompare(word1, word2):
-    if word1.bounding_box.vertices[4]<word2.bounding_box.vertices[4]:
+    if word1.bounding_box.vertices[3].y < word2.bounding_box.vertices[3].y:
         return -1
 
-    if word1.bounding_box.vertices[4]>word2.bounding_box.vertices[4]:
+    if word1.bounding_box.vertices[3].y >word2.bounding_box.vertices[3].y:
         return 1
 
     else:
         return 0
 
 def wordBoxSort(words):
+    words=list(words)
     quickSort(words, 0, len(words)-1, wordBoxCompare)
