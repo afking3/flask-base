@@ -229,24 +229,23 @@ def matches(word1, word2):
 
 """Simplifies getting a list of crimes for a single citation
 Returns index, crime list"""
-def get_crimes(index, word_list):
+def get_crimes(line_index, word_index, line_list):
     #index is the index of "Court:"    
     crimes = []
     
     while((re.match("[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]", word_list[index]) is None) or matches(word_list[index-1], 'DOB')):
-        index += 1
-
-    date = word_list[index]
+    index += 1
+    print(date)
     
-    while (word_list[index] != 'ARR/DET/CITE:' and word_similarity.check_word_against_term(word_list[index], 'ARR/DET/CITE:')): 
-        if matches(word_list[index], 'CNT'):
+    while ( not matches('ARR/DET/CITE:', line_list[line_index][word_index])): 
+        if matches(line_list[index], 'CNT'):
             crime = Crime()
             crime.set_date(date)
-            index = word_list.index("_newline", index)+1 #at offense code
-            crime.set_offense_code(word_list[index])
+            index = line_list.index("_newline", index)+1 #at offense code
+            crime.set_offense_code(line_list[index])
             crime_desc = ""
-            while (word_list[index] != "_newline"):
-                crime_desc += "" if 'TOC:' in word_list[index] else word_list[index]
+            while (line_list[index] != "_newline"):
+                crime_desc += "" if 'TOC:' in line_list[index] else line_list[index]
                 index += 1
             crime.set_offense_description = crime_desc
 
@@ -264,7 +263,7 @@ def sepIntoLines (words):
     for word in words:
         if word is not None:
             currY=word.bounding_box.vertices[3].y
-            if abs(currY - lastY )> 30:
+            if abs(currY - lastY )> 20:
                 lines.append(line)
                 line=[]
             
@@ -276,6 +275,18 @@ def sepIntoLines (words):
     if(len(line) > 0):
         lines.append(line)
     return lines
+
+bad_words={':',"", "-",",", "*"}
+
+def is_clean(word):
+    return not (word in bad_words)
+
+def sanitize (doc):
+    new_doc=[]
+    for line in doc:
+        new_doc.append(list(filter(lambda a: is_clean(a),line)))
+    
+    return new_doc
 
 def parse_document(filename):
     entire_doc = []
@@ -290,28 +301,22 @@ def parse_document(filename):
         for word in line:
             if type(word)==str:
                 word=word.encode('UTF-8')
+    
+    entire_doc=sanitize(entire_doc)
 
     print(entire_doc)
-
-
-    
-
-    cleaned_doc = []
-    for word in entire_doc:
-        cleaned_doc += (word.split(':'))
-    cleaned_doc = filter(lambda a: a != '', cleaned_doc)
-
-    print(cleaned_doc)
 
     rapsheet = Rapsheet()
 
     i = 0
+    j = 0
     while i < len(entire_doc):
-        if len(entire_doc[i]) == len('NAM/001') and (entire_doc[i] == 'NAM/001' or word_similarity.check_word_against_term(entire_doc[i], 'NAM/001')):
-            rapsheet.set_name(entire_doc[i+1] + " " + entire_doc[i+2])
+        while j < len(entire_doc[i]):
 
-        if (len(entire_doc[i]) == len('COURT:') and (entire_doc[i] == 'COURT:' or word_similarity.check_word_against_term(entire_doc[i], 'COURT'))):
-            ind, crimes = get_crimes(i, entire_doc)
+            if (len(entire_doc[i][j]) == len('COURT:') or len(entire_doc[i][j]) == len('COURT') and matches("COURT", entire_doc[i][j])):
+                ind, crimes = get_crimes(i, j, entire_doc)
+            
+            j += 1
 
         i += 1
 
