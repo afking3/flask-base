@@ -232,13 +232,13 @@ Returns index, crime list"""
 def get_crimes(line_index, word_index, line_list):
     #index is the index of "Court:"    
     crimes = []
-    
-    while((re.match("[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]", word_list[index]) is None) or matches(word_list[index-1], 'DOB')):
-    index += 1
+    line_index+=1
+    date=line_list[line_index][0]
     print(date)
     
+    # TODO: this part
     while ( not matches('ARR/DET/CITE:', line_list[line_index][word_index])): 
-        if matches(line_list[index], 'CNT'):
+        if matches(line_list[line_index][word_index], '001'):
             crime = Crime()
             crime.set_date(date)
             index = line_list.index("_newline", index)+1 #at offense code
@@ -263,9 +263,10 @@ def sepIntoLines (words):
     for word in words:
         if word is not None:
             currY=word.bounding_box.vertices[3].y
-            if abs(currY - lastY )> 20:
+            if abs(currY - lastY )> 10:
                 lines.append(line)
                 line=[]
+                print(getWordFromBox(word))
             
             # str_word is the string form of box
             str_word=getWordFromBox(word)
@@ -306,22 +307,23 @@ def parse_document(filename):
 
     print(entire_doc)
 
+    # print(entire_doc)
+
     rapsheet = Rapsheet()
 
     i = 0
     j = 0
     while i < len(entire_doc):
         while j < len(entire_doc[i]):
-
-            if (len(entire_doc[i][j]) == len('COURT:') or len(entire_doc[i][j]) == len('COURT') and matches("COURT", entire_doc[i][j])):
-                ind, crimes = get_crimes(i, j, entire_doc)
+            if (len(entire_doc[i][j])==len("COURT") and matches(entire_doc[i][j],"COURT")):
+                line_index,word_index, crimes = get_crimes(i, j, entire_doc)
             
             j += 1
-
+        j=0
         i += 1
 
     print(rapsheet.name)
 
 
-if __name__ == "__main__":
+#if __name__ == "__main__":
     parse_document("sample rap sheet.pdf")
