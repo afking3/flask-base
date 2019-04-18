@@ -191,6 +191,7 @@ def get_words(response):
                     for symbol in word.symbols:
                         token += symbol.text
                         if symbol.property.detected_break.type in [breaks.SPACE, breaks.EOL_SURE_SPACE, breaks.LINE_BREAK]:
+                            print(getWordFromBox(token))
                             tokens.append(token)
                             token = ""
     return tokens
@@ -325,5 +326,5 @@ def parse_document(filename):
     print(rapsheet.name)
 
 
-#if __name__ == "__main__":
+if __name__ == "__main__":
     parse_document("sample rap sheet.pdf")
