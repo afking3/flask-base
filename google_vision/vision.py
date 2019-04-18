@@ -194,7 +194,7 @@ def detect_document():
                         
                         prev_line=para
         # print("page: "+str(pageCount))
-        # print(paragraphs)
+        print(paragraphs)
 
 
 
