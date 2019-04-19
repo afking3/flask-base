@@ -31,7 +31,7 @@ def notInPropCodes(crime, rapsheet):
     return not inPropCodes(crime, rapsheet)
 
 def isAB109Elig(crime, rapsheet):
-    return True
+    return crime.offense == "non-violent, non-serious"
 
 def isPrison(crime, rapsheet):
     return crime.result == "Prison"
@@ -148,7 +148,7 @@ class RuleSet:
                 print(current_node.name, current_message)
                 messages.append(current_message)
             current_node = self.step(crime, rapsheet, current_node)
-
+        #this code can be cleaned up
         current_message = current_node.message
         if current_message != "":
             print(current_node.name, current_message)

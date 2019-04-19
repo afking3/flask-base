@@ -19,8 +19,8 @@ def assertResults(rapsheet, list_of_expected):
     for i in range(len(results)):
         result = results[i]
         expected_result = list_of_expected[i]
-        print(result["messages"], expected_result[0])
-        print(result["result"], expected_result[1])
+        print("\nResult messages:", result["messages"], "\nExpected messages:", expected_result[0])
+        print("\nResult result:", result["result"], "\nExpected result:", expected_result[1])
         assert result["messages"] == expected_result[0]
         assert result["result"] == expected_result[1]
 
@@ -193,5 +193,59 @@ def test_felony_prop_elig2():
     ])
     expected = [
         [["File CR-180 Misdemeanor"], "Mandatory"],
+    ]
+    assertResults(given, expected)
+
+#path 16
+def test_felony_ab109_eligible():
+    given = rs.Rapsheet(
+    [
+        rs.Crime("Felony", "Prison", two_years_ago, "non-violent, non-serious", "30", "Not Completed")
+    ])
+    expected = [
+        [[], "Discretionary"],
+    ]
+    assertResults(given, expected)
+
+#path 17
+def test_felony_not_ab109_eligible():
+    given = rs.Rapsheet(
+    [
+        rs.Crime("Felony", "Prison", two_years_ago, "non-violent, serious", "30", "Not Completed")
+    ])
+    expected = [
+        [[PUBLIC_DEFENDER], LA_PUB_DEF],
+    ]
+    assertResults(given, expected)
+
+#path 18
+def test_felony_not_ab109_eligible():
+    given = rs.Rapsheet(
+    [
+        rs.Crime("Misdemeanor", "Prison", week_ago, None, "487", "Not Completed")
+    ])
+    expected = [
+        [["File CR-180 Misdemeanor"], "Not Eligible"],
+    ]
+    assertResults(given, expected)
+
+#path 19
+def test_felony_ab109_eligible():
+    given = rs.Rapsheet(
+    [
+        rs.Crime("Misdemeanor", "Prison", two_years_ago, "non-violent, non-serious", "30", "Not Completed")
+    ])
+    expected = [
+        [[], "Discretionary"],
+    ]
+
+#path 20
+def test_felony_not_ab109_eligible():
+    given = rs.Rapsheet(
+    [
+        rs.Crime("Felony", "Prison", two_years_ago, "non-violent, serious", "30", "None")
+    ])
+    expected = [
+        [[PUBLIC_DEFENDER], LA_PUB_DEF],
     ]
     assertResults(given, expected)
