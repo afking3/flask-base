@@ -25,7 +25,7 @@ def get_similar_word (term, line):
     for word in words:
         new_words+=word.split(" ")
 
-    word=new_words
+    words=new_words
     for word in words:
         if matches(term, word):
             return word
@@ -45,7 +45,7 @@ def check_if_term_present(term, line):
     for word in words:
         new_words+=word.split(":")
 
-    word=new_words
+    words=new_words
     for word in words:
         if matches(term, word):
             return True 
@@ -167,7 +167,8 @@ def detect_document():
                             if lastDate is not None:
                                 crime.set_date(lastDate)
                             code=para.split("PC",1)[0]
-                            crime_type=para.split("PC",1)[1]
+                            if len(para.split("PC",1)) > 1:
+                                crime_type=para.split("PC",1)[1]
                             crime.set_offense_code(code)
                             crime.set_offense_description(crime_type)
                             if crime.dispo == "" and check_if_term_present("DISPO", crime_type) or check_if_term_present("DISPO:", crime_type):
@@ -198,12 +199,12 @@ def detect_document():
                             crime_type=para.split("VC-",1)[1]
                             crime.set_offense_code(code)
                             crime.set_offense_description(crime_type)
-                            if crime.dispo == "" and check_if_term_present("DISPO", crime_type) or check_if_term_present("DISPO:", crime_type):
+                            if crime.dispo=="" and check_if_term_present("DISPO", crime_type) or check_if_term_present("DISPO:", crime_type):
                                 crime.set_dispo(crime_type.split(get_similar_word("DISPO", para),1)[0])
-                            if crime.dispo == ""  and check_if_term_present("DISPO", para) or check_if_term_present("DISPO:", para):
+                            if crime.dispo=="" and check_if_term_present("DISPO", para) or check_if_term_present("DISPO:", para):
                                 crime.set_dispo(para.split(get_similar_word("DISPO:", para),1)[1])
                             rapsheet.add_crime(crime)
-                        elif crime.dispo == "" and check_if_term_present("DISPO", para) or check_if_term_present("DISPO:", para):
+                        elif crime.dispo=="" and check_if_term_present("DISPO", para) or check_if_term_present("DISPO:", para):
                             if len(rapsheet.crimes)==0:
                                 crime = Crime()
                             else:
@@ -230,7 +231,6 @@ def detect_document():
                                 continue
                             crime.set_result(para.split("SEN:")[1])
 
-                        
 
                         prev_line=para
         # print("page: "+str(pageCount))
@@ -294,10 +294,18 @@ def removeDupCrimes (crimes):
 
 
 def dispo_clean(crime):
-    if("DISPO" in crime.offense_description):
-        crime.set_offense_description(crime.offense_description.split("DISPO")[0])
-    if("DISPO" in crime.dispo):
-        crime.set_dispo(crime.dispo.split("DISPO")[1])
+
+    if(crime.offense_description !="" and check_if_term_present("DISPO",crime.offense_description)):
+        similar=get_similar_word("DISPO", crime.offense_description)
+        desc_split=crime.offense_description.split(similar)
+        if len(desc_split) > 1:
+            print(desc_split)
+            crime.set_offense_description(desc_split[0])
+            crime.set_dispo(desc_split[1])
+    if(crime.dispo !="" and check_if_term_present("DISPO",crime.dispo)):
+        similar=get_similar_word("DISPO", crime.dispo)
+        if len(crime.dispo.split(similar))>1:
+            crime.set_dispo(crime.dispo.split(similar)[1])
 
     return crime
 
