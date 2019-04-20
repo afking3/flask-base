@@ -12,7 +12,8 @@ substitute_costs[ord('S'), ord('5')] = 1.0
 
 substitute_costs[ord('O'), ord('0')] = 0.5
 substitute_costs[ord('0'), ord('O')] = 0.5
-
+substitute_costs[ord('P'), ord('F')] = 0.5
+substitute_costs[ord('F'), ord('P')] = 0.5
 
 substitute_costs[ord('N'), ord('H')] = 0.5
 substitute_costs[ord('H'), ord('N')] = 0.5
