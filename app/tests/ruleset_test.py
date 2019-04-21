@@ -219,7 +219,7 @@ def test_felony_not_ab109_eligible():
     assertResults(given, expected)
 
 #path 18
-def test_felony_not_ab109_eligible():
+def test_misdemeanor_prop_eligible():
     given = rs.Rapsheet(
     [
         rs.Crime("Misdemeanor", "Prison", week_ago, "487", "Not Completed", False)
@@ -230,7 +230,7 @@ def test_felony_not_ab109_eligible():
     assertResults(given, expected)
 
 #path 19
-def test_felony_ab109_eligible():
+def test_misdemeanor_ab109_eligible():
     given = rs.Rapsheet(
     [
         rs.Crime("Misdemeanor", "Prison", two_years_ago, "30", "Not Completed", True)
@@ -241,12 +241,48 @@ def test_felony_ab109_eligible():
     assertResults(given, expected)
 
 #path 20
-def test_felony_not_ab109_eligible():
+def test_misdemeanor_mandatory():
     given = rs.Rapsheet(
-    [
-        rs.Crime("Felony", "Prison", two_years_ago, "30", None, False)
-    ])
+        [
+            rs.Crime("Misdemeanor", "Prison", week_ago, "30", "Completed", False),
+        ])
     expected = [
-        [[PUBLIC_DEFENDER], LA_PUB_DEF],
+        [[], "Mandatory"],
+    ]
+    assertResults(given, expected)
+
+#path 21
+def test_misdemeanor_noprobation_discretionary():
+    given = rs.Rapsheet(
+        [
+            rs.Crime("Misdemeanor", "Prison", two_years_ago, None, None, None),
+            rs.Crime("Infraction", "Fine", week_ago, None, None, None)
+        ])
+    #Fix this test
+    expected = [
+        [[WAIT_1_YEAR], "Discretionary"],
+        [[], "Not Eligible"]
+    ]
+    assertResults(given, expected)
+
+#path 22
+def test_misdemeanor_noprobation_mandatory():
+    given = rs.Rapsheet(
+        [
+            rs.Crime("Misdemeanor", "Prison", two_years_ago, None, None, None)
+        ])
+    expected = [
+        [[WAIT_1_YEAR], "Mandatory"],
+    ]
+    assertResults(given, expected)
+
+#path 23
+def test_misdemeanor_noprobation_noteligible():
+    given = rs.Rapsheet(
+        [
+            rs.Crime("Misdemeanor", "Prison", week_ago, None, None, None)
+        ])
+    expected = [
+        [[WAIT_1_YEAR], "Not Eligible"],
     ]
     assertResults(given, expected)
