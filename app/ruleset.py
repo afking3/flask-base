@@ -10,13 +10,13 @@ class Rapsheet():
         self.crimes.append(crime)
 
 class Crime():
-    def __init__(self, crime_type, result, convict_date, offense, offense_code, prob_status):
+    def __init__(self, crime_type, result, convict_date, offense_code, prob_status, nonviolent_nonserious):
         self.crime_type = crime_type
         self.result = result
         self.conviction_date = convict_date
-        self.offense = offense
         self.offense_code = offense_code
         self.probation_status = prob_status
+        self.nonviolent_nonserious = nonviolent_nonserious
 
 example = Rapsheet([
         Crime("Infraction", "Fine", datetime.now(), None, None, None)
@@ -31,7 +31,7 @@ def notInPropCodes(crime, rapsheet):
     return not inPropCodes(crime, rapsheet)
 
 def isAB109Elig(crime, rapsheet):
-    return crime.offense == "non-violent, non-serious"
+    return crime.nonviolent_nonserious
 
 def isPrison(crime, rapsheet):
     return crime.result == "Prison"
@@ -40,7 +40,7 @@ def isCountyJail(crime, rapsheet):
     return crime.result == "County Jail"
 
 def isProbation(crime, rapsheet):
-    return crime.result == "Probation"
+    return crime.result == "Probation" or crime.probation_status != None
 
 def isUpTo1year(crime, rapsheet):
     return True
@@ -75,9 +75,6 @@ def hasMoreRecentConviction(crime, rapsheet):
             return True
     return False
 
-
-def isConvicted(crime, rapsheet):
-    return True
 
 class RuleSetNode:
     def __init__(self, id, name, message = ""):
