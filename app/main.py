@@ -1,5 +1,5 @@
 import ruleset
-#import rapsheet
+import vision
 
 ''' 
 Outputs a tuple of the rapsheet and results
@@ -19,14 +19,14 @@ Outputs a tuple of the rapsheet and results
     would return (rapsheet, results)
 '''
 def getOutputFromRapsheet(rap):
-    #json = detect_document(rap)
-    #rapsheet = parse_document(json)
-    #rules = ruleset.RuleSet()
-    #rapsheet_results = rules.resultsFromRapSheet(rapsheet)
-    #return (rapsheet, rapsheet_results)
+    json = vision.detect_document(rap)
+    rapsheet = vision.parse_document(json)
+    rules = ruleset.RuleSet()
+    rapsheet_results = rules.resultsFromRapSheet(rapsheet)
+    return (rapsheet, rapsheet_results)
 
 ''' 
-Given an input (rapsheer, results), 
+Given an input (rapsheet, results), 
 will give an output of the format
 
     crimes = [
@@ -50,9 +50,7 @@ returns None.
 def createExcelSheet(input, filename, path):
     pass
 
-    
 
-
-
-
-
+if __name__ == "__main__":
+    x = getOutputFromRapsheet()
+    print x
