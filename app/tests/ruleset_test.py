@@ -19,8 +19,8 @@ def assertResults(rapsheet, list_of_expected):
     for i in range(len(results)):
         result = results[i]
         expected_result = list_of_expected[i]
-        print(result["messages"], expected_result[0])
-        print(result["result"], expected_result[1])
+        print("\nResult messages:", result["messages"], "\nExpected messages:", expected_result[0])
+        print("\nResult result:", result["result"], "\nExpected result:", expected_result[1])
         assert result["messages"] == expected_result[0]
         assert result["result"] == expected_result[1]
 
@@ -101,7 +101,7 @@ def test_misdemeanor_not_eligible():
 def test_misdemeanor_mandatory2():
     given = rs.Rapsheet(
         [
-            rs.Crime("Misdemeanor", "Probation", week_ago, None, None, "Completed"),
+            rs.Crime("Misdemeanor", "Probation", week_ago, None, "Completed", False),
         ])
     expected = [
         [[], "Mandatory"],
@@ -112,7 +112,7 @@ def test_misdemeanor_mandatory2():
 def test_misdemeanor_mandatory3():
     given = rs.Rapsheet(
         [
-            rs.Crime("Misdemeanor", "Probation", week_ago, None, None, "Early Termination"),
+            rs.Crime("Misdemeanor", "Probation", week_ago, None, "Early Termination", True),
         ])
     expected = [
         [[], "Mandatory"],
@@ -123,7 +123,7 @@ def test_misdemeanor_mandatory3():
 def test_misdemeanor_mandatory4():
     given = rs.Rapsheet(
         [
-            rs.Crime("Misdemeanor", "Probation", week_ago, None, None, "Not Completed"),
+            rs.Crime("Misdemeanor", "Probation", week_ago, None, "Not Completed", False),
         ])
     expected = [
         [[], "Discretionary"],
@@ -134,7 +134,7 @@ def test_misdemeanor_mandatory4():
 def test_felony_mandatory2():
     given = rs.Rapsheet(
         [
-            rs.Crime("Felony", "Probation", week_ago, None, None, "Completed"),
+            rs.Crime("Felony", "Probation", week_ago, None, "Completed", True),
         ])
     expected = [
         [[], "Mandatory"],
@@ -145,7 +145,7 @@ def test_felony_mandatory2():
 def test_felony_mandatory3():
     given = rs.Rapsheet(
         [
-            rs.Crime("Felony", "Probation", week_ago, None, None, "Early Termination"),
+            rs.Crime("Felony", "Probation", week_ago, None, "Early Termination", True),
         ])
     expected = [
         [[], "Mandatory"],
@@ -156,7 +156,7 @@ def test_felony_mandatory3():
 def test_felony_discr():
     given = rs.Rapsheet(
         [
-            rs.Crime("Felony", "Probation", week_ago, None, None, "Not Completed"),
+            rs.Crime("Felony", "Probation", week_ago,None, "Not Completed", False),
         ])
     expected = [
         [[], "Discretionary"],
@@ -167,7 +167,7 @@ def test_felony_discr():
 def test_felony_county_discr():
     given = rs.Rapsheet(
         [
-            rs.Crime("Felony", "County Jail", week_ago, "non_violent, non_serious", None, "Not Completed"),
+            rs.Crime("Felony", "County Jail", week_ago, None, "Not Completed", True),
         ])
     expected = [
         [[COUNTY_JAIL_DISC], "Discretionary"],
@@ -178,7 +178,7 @@ def test_felony_county_discr():
 def test_felony_prop_elig1():
     given = rs.Rapsheet(
     [
-        rs.Crime("Felony", "Prison", week_ago, None, "487", "Not Completed")
+        rs.Crime("Felony", "Prison", week_ago, "487", "Not Completed", False)
     ])
     expected = [
         [["File CR-180 Misdemeanor"], "Not Eligible"],
@@ -189,9 +189,100 @@ def test_felony_prop_elig1():
 def test_felony_prop_elig2():
     given = rs.Rapsheet(
     [
-        rs.Crime("Felony", "Prison", two_years_ago, None, "487", "Not Completed")
+        rs.Crime("Felony", "Prison", two_years_ago, "487", "Not Completed", True)
     ])
     expected = [
         [["File CR-180 Misdemeanor"], "Mandatory"],
+    ]
+    assertResults(given, expected)
+
+#path 16
+def test_felony_ab109_eligible():
+    given = rs.Rapsheet(
+    [
+        rs.Crime("Felony", "Prison", two_years_ago, "30", "Not Completed", True)
+    ])
+    expected = [
+        [[], "Discretionary"],
+    ]
+    assertResults(given, expected)
+
+#path 17
+def test_felony_not_ab109_eligible():
+    given = rs.Rapsheet(
+    [
+        rs.Crime("Felony", "Prison", two_years_ago, "30", "Not Completed", False)
+    ])
+    expected = [
+        [[PUBLIC_DEFENDER], LA_PUB_DEF],
+    ]
+    assertResults(given, expected)
+
+#path 18
+def test_misdemeanor_prop_eligible():
+    given = rs.Rapsheet(
+    [
+        rs.Crime("Misdemeanor", "Prison", week_ago, "487", "Not Completed", False)
+    ])
+    expected = [
+        [["File CR-180 Misdemeanor"], "Not Eligible"],
+    ]
+    assertResults(given, expected)
+
+#path 19
+def test_misdemeanor_ab109_eligible():
+    given = rs.Rapsheet(
+    [
+        rs.Crime("Misdemeanor", "Prison", two_years_ago, "30", "Not Completed", True)
+    ])
+    expected = [
+        [[], "Discretionary"],
+    ]
+    assertResults(given, expected)
+
+#path 20
+def test_misdemeanor_mandatory():
+    given = rs.Rapsheet(
+        [
+            rs.Crime("Misdemeanor", "Prison", week_ago, "30", "Completed", False),
+        ])
+    expected = [
+        [[], "Mandatory"],
+    ]
+    assertResults(given, expected)
+
+#path 21
+def test_misdemeanor_noprobation_discretionary():
+    given = rs.Rapsheet(
+        [
+            rs.Crime("Misdemeanor", "Prison", two_years_ago, None, None, None),
+            rs.Crime("Infraction", "Fine", week_ago, None, None, None)
+        ])
+    #Fix this test
+    expected = [
+        [[WAIT_1_YEAR], "Discretionary"],
+        [[], "Not Eligible"]
+    ]
+    assertResults(given, expected)
+
+#path 22
+def test_misdemeanor_noprobation_mandatory():
+    given = rs.Rapsheet(
+        [
+            rs.Crime("Misdemeanor", "Prison", two_years_ago, None, None, None)
+        ])
+    expected = [
+        [[WAIT_1_YEAR], "Mandatory"],
+    ]
+    assertResults(given, expected)
+
+#path 23
+def test_misdemeanor_noprobation_noteligible():
+    given = rs.Rapsheet(
+        [
+            rs.Crime("Misdemeanor", "Prison", week_ago, None, None, None)
+        ])
+    expected = [
+        [[WAIT_1_YEAR], "Not Eligible"],
     ]
     assertResults(given, expected)
