@@ -4,6 +4,8 @@ import flask
 from flask import Flask, flash, request, redirect, url_for, render_template, send_from_directory, make_response
 from werkzeug.utils import secure_filename
 
+import main
+
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = set(['pdf'])
 
@@ -58,6 +60,16 @@ def next(page):
 def review():
     return render_template("step2.html", data=crimes, back="/upload", next="/download")
 
+
+'''
+whenever we have submitted the rapsheet
+
+x = main.getOutputFromRapsheet(rapsheet_pdf)
+output = main.formatOutput(x)
+excel = main.createExcelSheet(output)
+
+So then we need to display `output` and download from `excel`
+'''
 @app.route('/download')
 def download():
     return render_template("step3.html", data=crimes, back="/review", next="/download")
