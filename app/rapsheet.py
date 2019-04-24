@@ -16,9 +16,9 @@ class Rapsheet(object):
     def add_crime(self, crime):
         self.crimes.append(crime)
     
-    def print(self):
+    def print_crimes(self):
         for crime in self.crimes:
-            crime.print()
+            crime.print_crime()
             print("")
 
     
@@ -43,9 +43,11 @@ class Crime(object):
     def set_dispo(self, dispo):
         self.dispo = dispo
     
+    #Felony/Misdemeanor
     def set_crime_type(self, crime_type):
         self.crime_type=crime_type
 
+    #Either convicted or dismissed or such
     def set_result(self, result):
         self.result=result
 
@@ -55,7 +57,7 @@ class Crime(object):
         day = date[6:]
         self.date = datetime.date(int(year), int(month), int(day))
 
-    def print(self):
+    def print_crime(self):
         if self.date is not None:
             print("Date: "+self.date.strftime('%m/%d/%Y'))
         if self.offense_code is not None:
