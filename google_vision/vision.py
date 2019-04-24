@@ -252,7 +252,7 @@ def dupCheck(crime, crimes):
             return True
 
     return False
-
+# Counts how many fields are filled
 def countFields (crime):
     most=0
     if crime.offense_code is not "":
@@ -281,7 +281,7 @@ def getBestCrime(crime, crimes):
     
     return best
 
-
+# Removes duplicate crimes from [crimes]
 def removeDupCrimes (crimes): 
     added=[]
 
@@ -292,14 +292,13 @@ def removeDupCrimes (crimes):
     return added
 
 
-
+#Removes dispo information from offense description 
 def dispo_clean(crime):
 
     if(crime.offense_description !="" and check_if_term_present("DISPO",crime.offense_description)):
         similar=get_similar_word("DISPO", crime.offense_description)
         desc_split=crime.offense_description.split(similar)
         if len(desc_split) > 1:
-            print(desc_split)
             crime.set_offense_description(desc_split[0])
             crime.set_dispo(desc_split[1])
     if(crime.dispo !="" and check_if_term_present("DISPO",crime.dispo)):
@@ -309,12 +308,13 @@ def dispo_clean(crime):
 
     return crime
 
+# Cleans crimes parsed from rap sheet
 def clean_crimes(crimes):
+    list(filter(lambda a: a.offense_code!="", crimes))
     clean=[]
     for crime in crimes:
         if not crime.date == None:
             clean.append(crime)
-
     clean=removeDupCrimes(clean)
 
     for crime in crimes:
