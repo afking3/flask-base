@@ -26,7 +26,7 @@ def getOutputFromRapsheet(rap):
     #return (rapsheet, rapsheet_results)
 
 ''' 
-Given an input (rapsheer, results), 
+Given an input (rapsheet, results), 
 will give an output of the format
 
     crimes = [
