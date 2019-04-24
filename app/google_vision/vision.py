@@ -13,6 +13,8 @@ CREDENTIALS = service_account.Credentials.from_service_account_file('NLSLA Re-en
 
 CLIENT = vision.ImageAnnotatorClient(credentials=CREDENTIALS)
 
+# Gets word that is "close" to [term] by weighted levenshtein
+# in [line]
 def get_similar_word (term, line):  
     new_line=""
     if type(line) == list:
