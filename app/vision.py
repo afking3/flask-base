@@ -9,7 +9,7 @@ import word_similarity
 from google.oauth2 import service_account
 from google.cloud import vision
 
-CREDENTIALS = service_account.Credentials.from_service_account_file('NLSLA Re-entry-88f1acf99097.json')
+CREDENTIALS = service_account.Credentials.from_service_account_file('google_vision/NLSLA Re-entry-88f1acf99097.json')
 
 CLIENT = vision.ImageAnnotatorClient(credentials=CREDENTIALS)
 
@@ -67,7 +67,7 @@ def detect_document():
         """Detects document features in an image."""
         
 
-        with io.open(path, 'rb') as image_file:
+        with io.open('images/'+path, 'rb') as image_file:
             content = image_file.read()
 
         image = vision.types.Image(content=content)
@@ -105,9 +105,12 @@ def detect_document():
                     
                     #Skip if line contains this as it messes with DISPO 
                     #parsing
-
-                    if "\xd3" in para or '\xc7' in para:
+                    try:
+                        para.decode("ascii")
+                    except UnicodeEncodeError:
                         continue
+                    #if '\xd3' in para or '\xc7' in para:
+                        #continue
 
                     if "NO LONGER INTERESTED" in para:
                         continue
@@ -337,7 +340,8 @@ def getDate(dateString):
     
         
 if __name__ == "__main__":
-    detect_document().print()
+    rap = detect_document()
+    rap.print_crimes()
 
 # info={'Crimes':{}}
 # detect_document(r"images/Sample RAP Sheet-rotated-3.jpg", info)
