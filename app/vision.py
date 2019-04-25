@@ -35,10 +35,10 @@ def get_similar_word (term, line):
 def matches(word1, word2):
     return word1 == word2 or word_similarity.check_word_against_term(word1, word2)
 
-# Checks if term is in a line
+# Checks if term is in a line. If it is, return the actual word matched (could be slightly different).
 def check_if_term_present(term, line):
     if term in line:
-        return True
+        return term
     
     words= line.split(" ")
     new_words=[]
@@ -48,11 +48,11 @@ def check_if_term_present(term, line):
     words=new_words
     for word in words:
         if matches(term, word):
-            return True 
-    return False
+            return word 
+    return None
 
 
-def detect_document():
+def detect_document(rap):
     #initialize dictionary [info] with empty crimes field
     #and set [crime_count] to 0 and [pastNameAndDOB] to false
     rapsheet = Rapsheet()
@@ -62,15 +62,14 @@ def detect_document():
     #date of birth have been found yet
     pastNameAndDOB=False
 
+    byte_array = file_handling.open_file(rap)
+    pageCount = 0
+
     #Iterate over the images in the "images" directory
-    for pageCount, path in enumerate(os.listdir("images")):
+    for img in byte_array:
         """Detects document features in an image."""
         
-
-        with io.open('images/'+path, 'rb') as image_file:
-            content = image_file.read()
-
-        image = vision.types.Image(content=content)
+        image = vision.types.Image(content=img)
 
         response = CLIENT.document_text_detection(image=image)
 
@@ -121,8 +120,9 @@ def detect_document():
                     #print(para)
 
                     #Check line for convict's name
-                    if check_if_term_present('NAM/001', para):
-                        rapsheet.set_name(para.split("NAM/001",1)[1])
+                    name_exists = check_if_term_present('NAM/001', para)
+                    if name_exists is not None:
+                        rapsheet.set_name(para.split(name_exists)[1])
 
                     if prev_line is not None and (check_if_term_present("COURT", prev_line) or check_if_term_present("COURT:", prev_line)):
                         lastDate= getDate(para)
@@ -238,6 +238,7 @@ def detect_document():
                         prev_line=para
         # print("page: "+str(pageCount))
         # print(paragraphs)
+        pageCount += 1
     
     rapsheet.crimes=clean_crimes(rapsheet.crimes)
 
@@ -340,7 +341,7 @@ def getDate(dateString):
     
         
 if __name__ == "__main__":
-    rap = detect_document()
+    rap = detect_document('google_vision/pdf/Sample RAP Sheet-rotated (1).pdf')
     rap.print_crimes()
 
 # info={'Crimes':{}}
