@@ -4,7 +4,7 @@ import flask
 from flask import Flask, flash, request, redirect, url_for, render_template, send_from_directory, make_response, send_file
 from werkzeug.utils import secure_filename
 
-import main
+import main2
 
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = set(['pdf'])
@@ -37,8 +37,6 @@ crimes = [
 ]
 
 
-
-
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -62,27 +60,18 @@ def next(page):
 def review():
     return render_template("step2.html", data=crimes, back="/upload", next="/download")
 
-
-'''
-whenever we have submitted the rapsheet
-
-x = main.getOutputFromRapsheet(rapsheet_pdf)
-output = main.formatOutput(x)
-excel = main.createExcelSheet(output)
-
-So then we need to display `output` and download from `excel`
-'''
 @app.route('/download')
-def download(rapsheet_pdf):
-    x = main.getOutputFromRapsheet(rapsheet_pdf)
-    output = main.formatOutput(x)
-    excel = main.createExcelSheet(output)
-    download_excel(excel)
-    return render_template("step3.html", data=output, back="/review", next="/download")
+def download():
+    x = main2.getTestInput()
+    output = main2.formatOutput(x)
+    excel = main2.createExcelSheet(output, "output2.xls", "output/")
+    t= download_excel(excel)
+    print(t)
+    return render_template("step3.html", data=crimes, back="/review", next="/download")
 
 def download_excel(excel):
-    return send_file('app/result.xlsx',
-                     attachment_filename='result.xlsx',
+    return send_file('output/output2.xls',
+                     attachment_filename='output2.xls',
                      as_attachment=True)
 
 @app.route('/upload', methods=['GET', 'POST'])

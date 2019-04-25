@@ -59,6 +59,15 @@ def formatOutput(_input):
         final_crimes.append(new_obj)
     return final_crimes
 
+def getTestInput():
+    rap = rs.Rapsheet(
+        [
+            rs.Crime("Felony", "County Jail", "empty", None, "Not Completed", True),
+        ])
+    res = [
+        [["dis"], "Discretionary"],
+    ]
+    return (rap, res)
 '''
 Given an formatted input [input],
 will create an excel sheet
