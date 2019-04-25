@@ -1,7 +1,7 @@
 import os
 import json
 import flask
-from flask import Flask, flash, request, redirect, url_for, render_template, send_from_directory, make_response
+from flask import Flask, flash, request, redirect, url_for, render_template, send_from_directory, make_response, send_file
 from werkzeug.utils import secure_filename
 
 import main
@@ -35,6 +35,8 @@ crimes = [
         "date": "2018-03-03"
     }
 ]
+
+
 
 
 def allowed_file(filename):
@@ -71,8 +73,17 @@ excel = main.createExcelSheet(output)
 So then we need to display `output` and download from `excel`
 '''
 @app.route('/download')
-def download():
-    return render_template("step3.html", data=crimes, back="/review", next="/download")
+def download(rapsheet_pdf):
+    x = main.getOutputFromRapsheet(rapsheet_pdf)
+    output = main.formatOutput(x)
+    excel = main.createExcelSheet(output)
+    download_excel(excel)
+    return render_template("step3.html", data=output, back="/review", next="/download")
+
+def download_excel(excel):
+    return send_file('app/result.xlsx',
+                     attachment_filename='result.xlsx',
+                     as_attachment=True)
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
