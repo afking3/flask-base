@@ -11,6 +11,11 @@
       window.print();
     }
   </script>
+  <script>
+    function download(){
+      return 
+    }
+  </script>
   <title>Re-entry Tool</title>
 <body>
   <div class="modal hidden">
@@ -30,26 +35,34 @@
   </p>
   <table>
     <tr>
-      <th>EXPUNGEMENT</th>
-      <th>CRIME NAME</th>
-      <th>LOCATION</th>
-      <th>DATE</th>
+      <th>Crime Type</th>
+      <th>Result</th>
+      <th>Conviction Date</th>
+      <th>Offense</th>
+      <th>Offense Code</th>
+      <th>Expunge Result</th>
+      <th>Expunge Message</th>
+      <th>Probability Status</th>
       <th> </th>
     </tr>
-
+    
     {% for d in data %}
     <tr>
-      <td>{{ d.expungement }}</td>
-      <td>{{ d.name }}</td>
-      <td>{{d.location}}</td>
-      <td>{{d.date}}</td>
-      <td class="details">Details</td>
+      <td>{{ d.crime_type }}</td>
+      <td>{{ d.result }}</td>
+      <td>{{ d.convict_date }}</td>
+      <td>{{d.offsense}}</td>
+      <td>{{offense_code}}</td>
+      <td>{{prob_status}}</td>
+      <td>{{expunge_result}}</td>
+      <td>{{expunge_messages}}</td>
     </tr>
     {% endfor %}
    
   </table>
   <div id="buttons">
     <p onclick="myFunction()" id="print_button">Print Results</p>
+    <p class="download_button" onclick="download_excel()"><Download Excel></p>
     <p id="email_button" class="view">Email Results</p>
   </div>
 
