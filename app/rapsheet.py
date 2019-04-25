@@ -15,13 +15,12 @@ class Rapsheet(object):
 
     def add_crime(self, crime):
         self.crimes.append(crime)
-    
+
     def print_crimes(self):
         for crime in self.crimes:
             crime.print_crime()
             print("")
 
-    
 
 
 class Crime(object):
@@ -33,7 +32,7 @@ class Crime(object):
     result = ""
     def __init__(self):
         pass
-    
+
     def set_offense_code(self, ccode):
         self.offense_code = ccode
 
@@ -42,7 +41,7 @@ class Crime(object):
 
     def set_dispo(self, dispo):
         self.dispo = dispo
-    
+
     #Felony/Misdemeanor
     def set_crime_type(self, crime_type):
         self.crime_type=crime_type

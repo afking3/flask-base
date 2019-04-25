@@ -1,5 +1,5 @@
 import ruleset as rs
-#import vision
+import vision
 import xlwt
 from xlwt import Workbook
 
@@ -21,12 +21,10 @@ Outputs a tuple of the rapsheet and results
     would return (rapsheet, results)
 '''
 def getOutputFromRapsheet(rap):
-    #json = vision.detect_document(rap)
-    #rapsheet = vision.parse_document(json)
-    #rules = ruleset.RuleSet()
-    #rapsheet_results = rules.resultsFromRapSheet(rapsheet)
-    #return (rapsheet, rapsheet_results)
-    pass
+    rapsheet = vision.detect_document(rap)
+    rules = rs.RuleSet()
+    rapsheet_results = rules.resultsFromRapSheet(rapsheet)
+    return (rapsheet, rapsheet_results)
 
 '''
 Given an input (rapsheet, results),
@@ -112,3 +110,5 @@ if __name__ == "__main__":
     x = formatOutput((rap, res))
     path = createExcelSheet(x, "test2.xls", "tests")
     print(path)
+    x, y = getOutputFromRapsheet("google_vision/pdf/Sample RAP Sheet-rotated (1).pdf")
+    print(x, y)

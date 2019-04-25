@@ -13,7 +13,7 @@ CREDENTIALS = service_account.Credentials.from_service_account_file('google_visi
 
 CLIENT = vision.ImageAnnotatorClient(credentials=CREDENTIALS)
 
-def get_similar_word (term, line):  
+def get_similar_word (term, line):
     new_line=""
     if type(line) == list:
         for word in line:
@@ -30,7 +30,7 @@ def get_similar_word (term, line):
         if matches(term, word):
             return word
     return None
-    
+
 
 def matches(word1, word2):
     return word1 == word2 or word_similarity.check_word_against_term(word1, word2)
@@ -39,7 +39,7 @@ def matches(word1, word2):
 def check_if_term_present(term, line):
     if term in line:
         return term
-    
+
     words= line.split(" ")
     new_words=[]
     for word in words:
@@ -48,7 +48,7 @@ def check_if_term_present(term, line):
     words=new_words
     for word in words:
         if matches(term, word):
-            return word 
+            return word
     return None
 
 
@@ -68,7 +68,7 @@ def detect_document(rap):
     #Iterate over the images in the "images" directory
     for img in byte_array:
         """Detects document features in an image."""
-        
+
         image = vision.types.Image(content=img)
 
         response = CLIENT.document_text_detection(image=image)
@@ -99,13 +99,13 @@ def detect_document(rap):
                     paragraphs.append(para)
                     #In this boilerplate code for Google Vision, a [para]
                     #is more akin to what we would call a line of text
-                    
+
                     # TODO: Create a function for these checks and refactor
-                    
-                    #Skip if line contains this as it messes with DISPO 
+
+                    #Skip if line contains this as it messes with DISPO
                     #parsing
                     try:
-                        para.decode("ascii")
+                        para.encode("ascii")
                     except UnicodeEncodeError:
                         continue
                     #if '\xd3' in para or '\xc7' in para:
@@ -128,8 +128,8 @@ def detect_document(rap):
                         lastDate= getDate(para)
                         if lastDate is None:
                             continue
-                        
-                        
+
+
 
                     #Check line for convict's occupation, if found set
                     #pastNameAndDOB to true.
@@ -160,9 +160,9 @@ def detect_document(rap):
                                 crime.set_date(lastDate)
                             rapsheet.add_crime(crime)
                             crime=Crime()
-                            
 
-                
+
+
                         if check_if_term_present('PC', para):
                             if crime != Crime ():
                                 rapsheet.add_crime(crime)
@@ -179,24 +179,24 @@ def detect_document(rap):
                             if crime.dispo == "" and check_if_term_present("DISPO", para) or check_if_term_present("DISPO:", para):
                                 crime.set_dispo(para.split("DISPO:",1)[1])
                             rapsheet.add_crime(crime)
-                        
+
                         elif crime.dispo == "" and check_if_term_present("DISPO", para) or check_if_term_present("DISPO:", para):
                             if len(rapsheet.crimes)==0:
                                 crime =Crime()
                             if len(para.split("DISPO:",1)) > 1:
                                 crime.set_dispo(para.split("DISPO:",1)[1])
                                 rapsheet.add_crime(crime)
-                               
-                            
-                        
 
-   
+
+
+
+
                         if check_if_term_present('VC-', para):
                             if crime != Crime ():
                                 rapsheet.add_crime(crime)
                                 crime  = Crime()
                             if lastDate is not None:
-                              
+
                                 crime.set_date(lastDate)
                             code=para.split("VC-",1)[0]
                             crime_type=para.split("VC-",1)[1]
@@ -217,7 +217,7 @@ def detect_document(rap):
                             if len(para.split(get_similar_word("DISPO", para),1)) > 1:
                                 crime.set_dispo(para.split(get_similar_word("DISPO", para),1)[1])
 
-                        
+
                         if check_if_term_present('CONV STATUS', para) or check_if_term_present('CONV STATUS:', para):
                             convictionStatus=para.split("STATUS",1)[1]
                             convictionStatus=convictionStatus.split("SEN")[0]
@@ -227,7 +227,7 @@ def detect_document(rap):
                                 crimes=rapsheet.crimes
                                 crime=crimes[len(crimes)-1]
                             crime.set_crime_type(convictionStatus)
-                        
+
                         if check_if_term_present('SEN', para) or check_if_term_present('SEN:', para):
                             crimes=rapsheet.crimes
                             if check_if_term_present("PROBATION",crime.result) or check_if_term_present("JAIL",crime.result):
@@ -239,7 +239,7 @@ def detect_document(rap):
         # print("page: "+str(pageCount))
         # print(paragraphs)
         pageCount += 1
-    
+
     rapsheet.crimes=clean_crimes(rapsheet.crimes)
 
     # print(info)
@@ -267,7 +267,7 @@ def countFields (crime):
         most+=1
     if crime.result is not "":
         most+=1
-    
+
     return most
 
 # Gets crime with most information
@@ -282,11 +282,11 @@ def getBestCrime(crime, crimes):
                 crimes.remove(best)
             best=cr
             most=curr
-    
+
     return best
 
 # Removes duplicate crimes from [crimes]
-def removeDupCrimes (crimes): 
+def removeDupCrimes (crimes):
     added=[]
 
     for crime in crimes:
@@ -296,7 +296,7 @@ def removeDupCrimes (crimes):
     return added
 
 
-#Removes dispo information from offense description 
+#Removes dispo information from offense description
 def dispo_clean(crime):
 
     if(crime.offense_description !="" and check_if_term_present("DISPO",crime.offense_description)):
@@ -338,8 +338,8 @@ def getDate(dateString):
 
     return None
 
-    
-        
+
+
 if __name__ == "__main__":
     rap = detect_document('google_vision/pdf/Sample RAP Sheet-rotated (1).pdf')
     rap.print_crimes()
