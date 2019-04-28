@@ -70,7 +70,7 @@ def download():
 @app.route('/return-files/')
 def download_excel():
     print("hehehef")
-    return send_file('/output/output.xls',
+    return send_file('output/output.xls',
                      attachment_filename='output.xls',
                      as_attachment=True)
 
