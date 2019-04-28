@@ -3,7 +3,8 @@ import os
 import json
 import re
 import time
-from rapsheet import Rapsheet, Crime
+from rapsheet import VRapsheet, VCrime
+from ruleset import Rapsheet, Crime
 import file_handling
 import word_similarity
 from google.oauth2 import service_account
@@ -13,7 +14,9 @@ CREDENTIALS = service_account.Credentials.from_service_account_file('google_visi
 
 CLIENT = vision.ImageAnnotatorClient(credentials=CREDENTIALS)
 
-def get_similar_word (term, line):
+# Gets word that is "close" to [term] by weighted levenshtein
+# in [line]
+def get_similar_word (term, line):  
     new_line=""
     if type(line) == list:
         for word in line:
@@ -55,8 +58,8 @@ def check_if_term_present(term, line):
 def detect_document(rap):
     #initialize dictionary [info] with empty crimes field
     #and set [crime_count] to 0 and [pastNameAndDOB] to false
-    rapsheet = Rapsheet()
-    crime = Crime()
+    rapsheet = VRapsheet()
+    crime = VCrime()
     lastDate=None
     #[pastNameAndDOB] signifies whether the name and
     #date of birth have been found yet
@@ -143,9 +146,9 @@ def detect_document(rap):
                         #Check for crime and get PC.
                         #PC stands for penal code
                         if check_if_term_present('PC-', para):
-                            if crime != Crime ():
+                            if crime != VCrime ():
                                 rapsheet.add_crime(crime)
-                                crime  = Crime()
+                                crime  = VCrime()
                             crime.set_offense_code(para.split("PC-",1)[0])
                             if len(para.split("PC-",1)) > 1:
                                 crime_type=para.split("PC-",1)[1]
@@ -159,14 +162,14 @@ def detect_document(rap):
                             if lastDate is not None:
                                 crime.set_date(lastDate)
                             rapsheet.add_crime(crime)
-                            crime=Crime()
+                            crime=VCrime()
 
 
 
                         if check_if_term_present('PC', para):
-                            if crime != Crime ():
+                            if crime != VCrime ():
                                 rapsheet.add_crime(crime)
-                                crime  = Crime()
+                                crime  = VCrime()
                             if lastDate is not None:
                                 crime.set_date(lastDate)
                             code=para.split("PC",1)[0]
@@ -182,7 +185,7 @@ def detect_document(rap):
 
                         elif crime.dispo == "" and check_if_term_present("DISPO", para) or check_if_term_present("DISPO:", para):
                             if len(rapsheet.crimes)==0:
-                                crime =Crime()
+                                crime =VCrime()
                             if len(para.split("DISPO:",1)) > 1:
                                 crime.set_dispo(para.split("DISPO:",1)[1])
                                 rapsheet.add_crime(crime)
@@ -192,9 +195,9 @@ def detect_document(rap):
 
 
                         if check_if_term_present('VC-', para):
-                            if crime != Crime ():
+                            if crime != VCrime ():
                                 rapsheet.add_crime(crime)
-                                crime  = Crime()
+                                crime  = VCrime()
                             if lastDate is not None:
 
                                 crime.set_date(lastDate)
@@ -209,7 +212,7 @@ def detect_document(rap):
                             rapsheet.add_crime(crime)
                         elif crime.dispo=="" and check_if_term_present("DISPO", para) or check_if_term_present("DISPO:", para):
                             if len(rapsheet.crimes)==0:
-                                crime = Crime()
+                                crime = VCrime()
                             else:
                                 crimes=rapsheet.crimes
                                 crime=crimes[len(crimes)-1]
@@ -222,7 +225,7 @@ def detect_document(rap):
                             convictionStatus=para.split("STATUS",1)[1]
                             convictionStatus=convictionStatus.split("SEN")[0]
                             if len(rapsheet.crimes)==0:
-                                crime = Crime()
+                                crime = VCrime()
                             else:
                                 crimes=rapsheet.crimes
                                 crime=crimes[len(crimes)-1]
@@ -243,7 +246,7 @@ def detect_document(rap):
     rapsheet.crimes=clean_crimes(rapsheet.crimes)
 
     # print(info)
-    return rapsheet
+    return translateRapsheet(rapsheet)
     #print(lines)
 
 # def codeChecker (codeType, line, Crimes):
@@ -338,8 +341,25 @@ def getDate(dateString):
 
     return None
 
+def translateCrime (crime):
+    crime_type = crime.crime_type
+    result = crime.result
+    convict_date = crime.date
+    offense_code = crime.offense_code
+
+    return Crime(crime_type, result, convict_date, offense_code, "", "")
 
 
+
+def translateRapsheet(rapsheet):
+    newRapsheet = Rapsheet ()
+
+    for crime in rapsheet.crimes:
+        newRapsheet.addCrime(translateCrime(crime))
+
+    return newRapsheet
+
+     
 if __name__ == "__main__":
     rap = detect_document('google_vision/pdf/Sample RAP Sheet-rotated (1).pdf')
     rap.print_crimes()

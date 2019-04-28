@@ -1,6 +1,6 @@
 import datetime
 
-class Rapsheet(object):
+class VRapsheet(object):
     crimes = []
     name = ""
     occ = ""
@@ -23,7 +23,7 @@ class Rapsheet(object):
 
 
 
-class Crime(object):
+class VCrime(object):
     date = None
     offense_code = ""
     offense_description = ""
