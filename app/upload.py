@@ -3,6 +3,7 @@ import json
 import flask
 from flask import Flask, flash, request, redirect, url_for, render_template, send_from_directory, make_response, send_file
 from werkzeug.utils import secure_filename
+from main2 import getOutputFromRapsheet
 
 import main2
 
@@ -48,6 +49,7 @@ def index():
 
 @app.route('/<page>')
 def next(page):
+    print (page)
     return  render_template(page)
 
 # @app.route('/')
@@ -56,13 +58,13 @@ def next(page):
 #     user = {'username': 'Miguel'}
 #     return render_template('index.html', title='Home', user=user)
 
-@app.route('/review', methods=['GET', 'POST'])
-def review():
-    return render_template("step2.html", data=crimes, back="/upload", next="/download")
+@app.route('/review/<filename>', methods=['GET', 'POST'])
+def review(filename):
+    return render_template("step2.html", data=crimes, back="/upload", next="/download/<filename>", filename=filename)
 
-@app.route('/download')
-def download():
-    x = main2.getTestInput()
+@app.route('/download/')
+def download(file_name):
+    x = getOutputFromRapsheet(file_name)
     output = main2.formatOutput(x)
     excel = main2.createExcelSheet(output, "output.xls", "output/")
     return render_template("step3.html", data=output, back="/review", next="/download")
@@ -92,7 +94,11 @@ def upload_file():
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             return redirect(url_for('show',
                                     filename=filename))
-    return render_template('upload.html', back="/", next="/review")
+        return render_template('upload.html', back="/", next="/download/", filename=filename)
+
+    else:
+        return render_template('upload.html', back="/", next="/review/")
+
 
 
 
@@ -133,7 +139,7 @@ def show(filename):
             return redirect(url_for('show',
                                     filename=filename))
 
-    return render_template('step1.html', reupload="/upload", back="/", next="/review", filename=filename)
+    return render_template('step1.html', reupload="/upload", back="/",  next="/download/<filename>", filename=filename)
 
 
 @app.route('/uploads/<filename>')

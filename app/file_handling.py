@@ -26,6 +26,7 @@ def _open_pdf(filename):
 Return a list of byte arrays (each for one picture) corresponding to filename.
 """
 def open_file(filename):
+    print(filename)
     name, ext = os.path.splitext(filename)
     ext = ext.lower()
     if ext == ".png" or ext == ".jpg" or ext == ".jpeg":
