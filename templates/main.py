@@ -1,5 +1,6 @@
-import ruleset
-import vision
+#import from all the other files
+
+
 
 ''' 
 Outputs a tuple of the rapsheet and results
@@ -11,6 +12,7 @@ Outputs a tuple of the rapsheet and results
                 rs.Crime("Misdemeanor", "Up To A Year In County Jail", two_years_ago, None, None, None),
                 rs.Crime("Infraction", "Fine", week_ago, None, None, None)
             ])
+        (i.e. the first element is the messages, the second is the result)
         results = [
             [[], "Discretionary"],
             [[], "Not Eligible"]
@@ -18,15 +20,13 @@ Outputs a tuple of the rapsheet and results
 
     would return (rapsheet, results)
 '''
-def getOutputFromRapsheet(rap):
-    json = vision.detect_document(rap)
-    rapsheet = vision.parse_document(json)
-    rules = ruleset.RuleSet()
-    rapsheet_results = rules.resultsFromRapSheet(rapsheet)
-    return (rapsheet, rapsheet_results)
+def getOutputFromRapsheet(rapsheet):
+
+    #vision = GOOGLEVISION(rapsheet)
+    #     
 
 ''' 
-Given an input (rapsheet, results), 
+Given an input (rapsheer, results), 
 will give an output of the format
 
     crimes = [
@@ -50,7 +50,9 @@ returns None.
 def createExcelSheet(input, filename, path):
     pass
 
+    
 
-if __name__ == "__main__":
-    x = getOutputFromRapsheet()
-    print x
+
+
+
+

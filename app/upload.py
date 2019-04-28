@@ -1,8 +1,10 @@
 import os
 import json
 import flask
-from flask import Flask, flash, request, redirect, url_for, render_template, send_from_directory, make_response
+from flask import Flask, flash, request, redirect, url_for, render_template, send_from_directory, make_response, send_file
 from werkzeug.utils import secure_filename
+
+import main2
 
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = set(['pdf'])
@@ -60,7 +62,17 @@ def review():
 
 @app.route('/download')
 def download():
-    return render_template("step3.html", data=crimes, back="/review", next="/download")
+    x = main2.getTestInput()
+    output = main2.formatOutput(x)
+    excel = main2.createExcelSheet(output, "output.xls", "output/")
+    return render_template("step3.html", data=output, back="/review", next="/download")
+
+@app.route('/return-files/')
+def download_excel():
+    print("hehehef")
+    return send_file('/output/output.xls',
+                     attachment_filename='output.xls',
+                     as_attachment=True)
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
@@ -138,6 +150,4 @@ if __name__== "__main__":
 	# db.create_all() #do only once
     app.secret_key = b'486995feb1ce1b4d2e282a6b31cb3bfbd90ef8ce33713783'    
     app.config['SESSION_TYPE'] = 'filesystem'
-    app.run()
-
-
+    app.run(debug=False)
