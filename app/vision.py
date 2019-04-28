@@ -246,7 +246,7 @@ def detect_document(rap):
     rapsheet.crimes=clean_crimes(rapsheet.crimes)
 
     # print(info)
-    return rapsheet
+    return translateRapsheet(rapsheet)
     #print(lines)
 
 # def codeChecker (codeType, line, Crimes):
