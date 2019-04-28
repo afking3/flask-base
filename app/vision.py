@@ -162,7 +162,7 @@ def detect_document(rap):
                             if lastDate is not None:
                                 crime.set_date(lastDate)
                             rapsheet.add_crime(crime)
-                            crime=Crime()
+                            crime=VCrime()
 
 
 
