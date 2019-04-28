@@ -336,8 +336,7 @@ def getDate(dateString):
 
     return None
 
-    
-        
+     
 if __name__ == "__main__":
     detect_document().print()
 
