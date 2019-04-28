@@ -64,14 +64,14 @@ def review():
 def download():
     x = main2.getTestInput()
     output = main2.formatOutput(x)
-    excel = main2.createExcelSheet(output, "output2.xls", "output/")
-    t= download_excel(excel)
-    print(t)
-    return render_template("step3.html", data=crimes, back="/review", next="/download")
+    excel = main2.createExcelSheet(output, "output.xls", "output/")
+    return render_template("step3.html", data=output, back="/review", next="/download")
 
-def download_excel(excel):
-    return send_file('output/output2.xls',
-                     attachment_filename='output2.xls',
+@app.route('/return-files/')
+def download_excel():
+    print("hehehef")
+    return send_file('/output/output.xls',
+                     attachment_filename='output.xls',
                      as_attachment=True)
 
 @app.route('/upload', methods=['GET', 'POST'])
@@ -150,6 +150,4 @@ if __name__== "__main__":
 	# db.create_all() #do only once
     app.secret_key = b'486995feb1ce1b4d2e282a6b31cb3bfbd90ef8ce33713783'    
     app.config['SESSION_TYPE'] = 'filesystem'
-    app.run()
-
-
+    app.run(debug=False)
