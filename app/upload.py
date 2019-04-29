@@ -62,9 +62,9 @@ def next(page):
 def review(filename):
     return render_template("step2.html", data=crimes, back="/upload", next="/download/<filename>", filename=filename)
 
-@app.route('/download/')
-def download(file_name):
-    x = getOutputFromRapsheet(file_name)
+@app.route('/download/<filename>')
+def download(filename):
+    x = getOutputFromRapsheet(filename)
     output = main2.formatOutput(x)
     excel = main2.createExcelSheet(output, "output.xls", "output/")
     return render_template("step3.html", data=output, back="/review", next="/download")
@@ -139,7 +139,8 @@ def show(filename):
             return redirect(url_for('show',
                                     filename=filename))
 
-    return render_template('step1.html', reupload="/upload", back="/",  next="/download/<filename>", filename=filename)
+    return redirect(url_for('download',
+                                    filename=filename))
 
 
 @app.route('/uploads/<filename>')

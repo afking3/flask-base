@@ -142,13 +142,13 @@ class RuleSet:
         while current_node != None and len(self.graph[current_node]) > 0:
             current_message = current_node.message
             if current_message != "":
-                print(current_node.name, current_message)
+                #print(current_node.name, current_message)
                 messages.append(current_message)
             current_node = self.step(crime, rapsheet, current_node)
         #this code can be cleaned up
         current_message = current_node.message
         if current_message != "":
-            print(current_node.name, current_message)
+            #print(current_node.name, current_message)
             messages.append(current_message)
 
         return (current_node, messages)
