@@ -18,7 +18,8 @@ def _open_single_image(filename):
 Opens a PDF and converts to a list of PIL images.
 """
 def _open_pdf(filename):
-    imgs = pdf2image.convert_from_path(filename)
+    
+    imgs = pdf2image.convert_from_path("uploads/"+filename)
     map((lambda i: i.convert), imgs)
     return imgs
 
@@ -26,7 +27,7 @@ def _open_pdf(filename):
 Return a list of byte arrays (each for one picture) corresponding to filename.
 """
 def open_file(filename):
-    name, ext = os.path.splitext(filename)
+    name, ext = os.path.splitext("uploads/"+filename)
     ext = ext.lower()
     if ext == ".png" or ext == ".jpg" or ext == ".jpeg":
         imgs = _open_single_image(filename)

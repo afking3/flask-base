@@ -44,7 +44,7 @@ def formatOutput(_input):
     final_crimes = []
     for index in range(len(crimes)):
         crime = crimes[index]
-        print(crime)
+        #print(crime)
         new_obj = {}
         new_obj["crime_type"] = crime.crime_type
         new_obj["result"] = crime.result
@@ -52,8 +52,10 @@ def formatOutput(_input):
         new_obj["offense_code"] = crime.offense_code
         new_obj["prob_status"] = crime.probation_status
         result = results[index]
-        new_obj["expunge_result"] = result[1]
-        new_obj["expunge_messages"] = result[0]
+        #new_obj["expunge_result"] = result[1]
+        #new_obj["expunge_messages"] = result[0]
+        new_obj["expunge_result"] = ""
+        new_obj["expunge_messages"] = ""
         final_crimes.append(new_obj)
     return final_crimes
 

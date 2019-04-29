@@ -68,6 +68,7 @@ def detect_document(rap):
     byte_array = file_handling.open_file(rap)
     pageCount = 0
 
+
     #Iterate over the images in the "images" directory
     for img in byte_array:
         """Detects document features in an image."""
