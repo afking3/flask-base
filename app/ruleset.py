@@ -27,7 +27,7 @@ class Crime():
     def printCrime(self):
         string = ""
         string += self.crime_type + " | "
-        string += self.result + " | "
+        string += self.result["probation"] + " | " + self.result["jail"] + " | " + self.result["fine"]
         string += self.conviction_date.strftime('%m/%d/%Y') + " | "
         string += self.offense_code + " | "
         string += self.probation_status + " | "
@@ -119,7 +119,7 @@ class RuleSet:
 
         end_node, messages = self.evaluate(crime, rapsheet)
         resulting_obj = {
-            'result': end_node.name,
+            'result': end_node.name if end_node != None else "No result!",
             'messages': messages
         }
         return resulting_obj
@@ -171,6 +171,7 @@ class RuleSet:
                 if current_message != "":
                     messages.append(current_message)
                 current_node, failed = self.step(crime, rapsheet, current_node)
+                messages.append(current_node.name)
                 if failed:
                     messages.append("Inconclusive: unable to find an end result.")
                     return (None, messages)
