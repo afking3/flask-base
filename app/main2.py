@@ -56,7 +56,16 @@ def formatOutput(_input):
         #print(crime)
         new_obj = {}
         new_obj["crime_type"] = crime.crime_type
-        new_obj["result"] = crime.result
+        temp = ""
+        if crime.result["probation"] and crime.result["probation"] != "none":
+            temp += crime.result["probation"] + " "
+        if crime.result["jail"] and crime.result["jail"] != "none":
+            temp += crime.result["jail"] + " "
+        if crime.result["fine"] and crime.result["fine"] != "none":
+            temp += "Fine "
+        if temp == "":
+            temp = "No Result?"
+        new_obj["result"] = temp
         new_obj["convict_date"] = crime.conviction_date
         new_obj["offense_code"] = crime.offense_code
         new_obj["prob_status"] = crime.probation_status
