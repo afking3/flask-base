@@ -53,13 +53,13 @@ def isAB109Elig(crime, rapsheet):
     return crime.nonviolent_nonserious
 
 def isPrison(crime, rapsheet):
-    return crime.result["jail"] != False and crime.result["jail"] != None and crime.result["jail"] != "None"
+    return crime.result["jail"] != False and crime.result["jail"] != None and crime.result["jail"] != "none"
 
 def isCountyJail(crime, rapsheet):
-    return crime.result["jail"] != False and crime.result["jail"] != None and crime.result["jail"] != "None"
+    return crime.result["jail"] != False and crime.result["jail"] != None and crime.result["jail"] != "none"
 
 def isProbation(crime, rapsheet):
-    return crime.result["probation"] != False and crime.result["probation"] != None and crime.result["probation"] != "None"
+    return crime.result["probation"] != False and crime.result["probation"] != None and crime.result["probation"] != "none"
 
 def isUpTo1year(crime, rapsheet):
     return True
@@ -140,9 +140,9 @@ class RuleSet:
             yield temp
             temp += 1
 
-    ''' 
+    '''
         returns a response (node, failure)
-        where failure is set to True 
+        where failure is set to True
     '''
     def step(self, crime, rapsheet, current_node):
         assert(isinstance(crime, Crime))
@@ -174,7 +174,7 @@ class RuleSet:
                 if failed:
                     messages.append("Inconclusive: unable to find an end result.")
                     return (None, messages)
-                    
+
             #this code can be cleaned up
             current_message = current_node.message
             if current_message != "":
