@@ -9,6 +9,10 @@ class Rapsheet():
     def addCrime(self, crime):
         self.crimes.append(crime)
 
+    def print(self):
+        for crime in self.crimes:
+            crime.printCrime()
+
 class Crime():
     def __init__(self, crime_type, result, convict_date, offense_code, prob_status, nonviolent_nonserious):
         self.crime_type = crime_type
@@ -17,6 +21,16 @@ class Crime():
         self.offense_code = offense_code
         self.probation_status = prob_status
         self.nonviolent_nonserious = nonviolent_nonserious
+
+    def printCrime(self):
+        string = ""
+        string += self.crime_type + " | "
+        string += self.result + " | "
+        string += self.conviction_date.strftime('%m/%d/%Y') + " | "
+        string += self.offense_code + " | "
+        string += self.probation_status + " | "
+        string += self.nonviolent_nonserious + " | "
+        print(string)
 
 example = Rapsheet([
         Crime("Infraction", "Fine", datetime.now(), None, None, None)

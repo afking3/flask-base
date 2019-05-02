@@ -24,6 +24,14 @@ def getOutputFromRapsheet(rap):
     rapsheet = vision.detect_document(rap)
     rules = rs.RuleSet()
     rapsheet_results = rules.resultsFromRapSheet(rapsheet)
+
+    print("------------------------")
+    for crime in rapsheet.crimes:
+        crime.printCrime()
+    print("------------------------")
+    print(rapsheet_results)
+    print("------------------------")
+
     return (rapsheet, rapsheet_results)
 
 '''
@@ -41,6 +49,7 @@ def formatOutput(_input):
     crimes = rapsheet.crimes
     results = _input[1]
 
+
     final_crimes = []
     for index in range(len(crimes)):
         crime = crimes[index]
@@ -52,22 +61,13 @@ def formatOutput(_input):
         new_obj["offense_code"] = crime.offense_code
         new_obj["prob_status"] = crime.probation_status
         result = results[index]
-        #new_obj["expunge_result"] = result[1]
-        #new_obj["expunge_messages"] = result[0]
-        new_obj["expunge_result"] = ""
-        new_obj["expunge_messages"] = ""
+        new_obj["expunge_result"] = result["result"]
+        new_obj["expunge_messages"] = result["messages"]
+        #new_obj["expunge_result"] = ""
+        #new_obj["expunge_messages"] = ""
         final_crimes.append(new_obj)
     return final_crimes
 
-def getTestInput():
-    rap = rs.Rapsheet(
-        [
-            rs.Crime("Felony", "County Jail", "empty", None, "Not Completed", True),
-        ])
-    res = [
-        [["dis"], "Discretionary"],
-    ]
-    return (rap, res)
 '''
 Given an formatted input [input],
 will create an excel sheet
