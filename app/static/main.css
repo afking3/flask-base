@@ -75,6 +75,15 @@ nav {
   margin-top: 50px;
 }
 
+#download_button{
+  display: inline-block;
+  font-size: 16px;
+  color: #DE8000;
+  border: #DE8000 solid 1px;
+  padding: 10px;
+  margin-top: 50px;
+}
+
 #print_button a {
   color: #DE8000;
   text-decoration: none;

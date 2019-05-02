@@ -56,17 +56,18 @@ def next(page):
 #     user = {'username': 'Miguel'}
 #     return render_template('index.html', title='Home', user=user)
 
-@app.route('/review/<filename>', methods=['GET', 'POST'])
-def review(filename):
-    return render_template("step2.html", data=crimes, back=url_for('show', filename=filename), next=url_for('download', filename=filename))
+# @app.route('/review/<filename>', methods=['GET', 'POST'])
+# def review(filename):
+#     return render_template("step2.html", data=crimes, back=url_for('show', filename=filename), next=url_for('download', filename=filename))
 
 @app.route('/download/<filename>')
 def download(filename):
     # x = main2.getTestInput()
     x = main2.getOutputFromRapsheet(filename)
     output = main2.formatOutput(x)
+    print(output)
     excel = main2.createExcelSheet(output, "output.xls", "output/")
-    return render_template("step3.html", data=output, back=url_for('review', filename=filename), next=url_for('download', filename=filename))
+    return render_template("step3.html", data=output, back=url_for('show', filename=filename), next=url_for('download', filename=filename))
 
 @app.route('/return-files/')
 def download_excel():
@@ -96,21 +97,6 @@ def upload_file():
 
 
 
-
-# @app.route('/uploads/<id>')
-# def get_pdf(id=None):
-#     if id is not None:
-#         binary_pdf = get_binary_pdf_data_from_database(id=id)
-#         response = make_response(binary_pdf)
-#         response.headers['Content-Type'] = 'application/pdf'
-#         response.headers['Content-Disposition'] = \
-#             'inline; filename=%s.pdf' % id
-#         return response
-
-# @app.route('/<id>')
-# def show_pdf(id=None):
-#     if id is not None:
-#         return render_template('doc.html', doc_id=id)
 @app.route('/show/<filename>', methods=['GET', 'POST'])
 def show(filename):
 #     filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
@@ -133,7 +119,7 @@ def show(filename):
             return redirect(url_for('show',
                                     filename=filename))
 
-    return render_template('step1.html', reupload="/upload/", back="/", next = url_for('review', filename=filename), filename=filename)
+    return render_template('step1.html', reupload="/upload/", back="/", next = url_for('download', filename=filename), filename=filename)
 
 
 @app.route('/uploads/<filename>')
