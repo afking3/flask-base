@@ -71,7 +71,7 @@ def isMisdemeanor(crime, rapsheet):
     return crime.crime_type == "Misdemeanor"
 
 def isSupervision(crime, rapsheet):
-    return crime.result["probation"] != False and crime.result["probation"] != None and crime.result["probation"] != "None"
+    return crime.result["probation"] != False and crime.result["probation"] != None and crime.result["probation"] != "none"
 
 def isProbationCompletion(crime, rapsheet):
     return crime.probation_status == "Completed"
