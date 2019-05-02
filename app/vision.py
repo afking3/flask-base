@@ -334,10 +334,10 @@ def clean_crimes(crimes):
     clean=removeDupCrimes(clean)
 
     for crime in crimes:
-        crime=dispo_clean(crime)
         crime.result = crime.result.replace(":","")
         crime.dispo = crime.dispo.replace(":","")
         crime.crime_type=crime.crime_type.replace(":","")
+        crime=dispo_clean(crime)
 
     list(filter(lambda a:  crimeIsNotBlank(a), crimes))
 
