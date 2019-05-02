@@ -53,13 +53,13 @@ def isAB109Elig(crime, rapsheet):
     return crime.nonviolent_nonserious
 
 def isPrison(crime, rapsheet):
-    return crime.result["jail"] != False and crime.result["jail"] != None
+    return crime.result["jail"] != False and crime.result["jail"] != None and crime.result["jail"] != "None"
 
 def isCountyJail(crime, rapsheet):
-    return crime.result["jail"] != False and crime.result["jail"] != None
+    return crime.result["jail"] != False and crime.result["jail"] != None and crime.result["jail"] != "None"
 
 def isProbation(crime, rapsheet):
-    return crime.result["probation"] != False and crime.result["probation"] != None
+    return crime.result["probation"] != False and crime.result["probation"] != None and crime.result["probation"] != "None"
 
 def isUpTo1year(crime, rapsheet):
     return True
@@ -71,7 +71,7 @@ def isMisdemeanor(crime, rapsheet):
     return crime.crime_type == "Misdemeanor"
 
 def isSupervision(crime, rapsheet):
-    return crime.result["probation"] != False and crime.result["probation"] != None
+    return crime.result["probation"] != False and crime.result["probation"] != None and crime.result["probation"] != "None"
 
 def isProbationCompletion(crime, rapsheet):
     return crime.probation_status == "Completed"
@@ -163,7 +163,7 @@ class RuleSet:
         assert(isinstance(rapsheet, Rapsheet))
 
         messages = []
-        
+
         try:
             current_node = self.start_node
             while current_node != None and len(self.graph[current_node]) > 0:
