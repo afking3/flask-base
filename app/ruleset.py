@@ -135,13 +135,17 @@ class RuleSet:
             yield temp
             temp += 1
 
+    ''' 
+        returns a response (node, failure)
+        where failure is set to True 
+    '''
     def step(self, crime, rapsheet, current_node):
         assert(isinstance(crime, Crime))
         assert(isinstance(rapsheet, Rapsheet))
         assert(isinstance(current_node, RuleSetNode))
 
         if self.graph[current_node] == []:
-            return (None, False)
+            return (current_node, False)
 
         for (dest, predicate) in self.graph[current_node]:
             assert(type(predicate) == type(lambda x, y: x + y))
@@ -162,7 +166,9 @@ class RuleSet:
                 messages.append(current_message)
             current_node, failed = self.step(crime, rapsheet, current_node)
             if failed:
-                return (None, "Inconclusive: unable to find an end result.")
+                messages.append("Inconclusive: unable to find an end result.")
+                return (None, messages)
+                
         #this code can be cleaned up
         current_message = current_node.message
         if current_message != "":
