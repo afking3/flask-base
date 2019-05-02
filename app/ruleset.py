@@ -14,6 +14,8 @@ class Rapsheet():
             crime.printCrime()
 
 class Crime():
+
+    ''' '''
     def __init__(self, crime_type, result, convict_date, offense_code, prob_status, nonviolent_nonserious):
         self.crime_type = crime_type
         self.result = result
@@ -39,7 +41,10 @@ example = Rapsheet([
 prop47codes = ["487", "490.2", "459.5", "459", "461", "496", "666", "473", "476", "476a", "11350", "11357", "11377"];
 
 def inPropCodes(crime, rapsheet):
-    return crime.offense_code in prop47codes
+    for code in prop47codes:
+        if code in crime.offense_code:
+            return True
+    return False
 
 def notInPropCodes(crime, rapsheet):
     return not inPropCodes(crime, rapsheet)
@@ -48,13 +53,13 @@ def isAB109Elig(crime, rapsheet):
     return crime.nonviolent_nonserious
 
 def isPrison(crime, rapsheet):
-    return crime.result == "Prison"
+    return crime.result["jail"] != False and crime.result["jail"] != None and crime.result["jail"] != "None"
 
 def isCountyJail(crime, rapsheet):
-    return crime.result == "County Jail"
+    return crime.result["jail"] != False and crime.result["jail"] != None and crime.result["jail"] != "None"
 
 def isProbation(crime, rapsheet):
-    return crime.result == "Probation" or crime.probation_status != None
+    return crime.result["probation"] != False and crime.result["probation"] != None and crime.result["probation"] != "None"
 
 def isUpTo1year(crime, rapsheet):
     return True
@@ -66,7 +71,7 @@ def isMisdemeanor(crime, rapsheet):
     return crime.crime_type == "Misdemeanor"
 
 def isSupervision(crime, rapsheet):
-    return crime.result == "Probation"
+    return crime.result["probation"] != False and crime.result["probation"] != None and crime.result["probation"] != "None"
 
 def isProbationCompletion(crime, rapsheet):
     return crime.probation_status == "Completed"
@@ -135,13 +140,17 @@ class RuleSet:
             yield temp
             temp += 1
 
+    ''' 
+        returns a response (node, failure)
+        where failure is set to True 
+    '''
     def step(self, crime, rapsheet, current_node):
         assert(isinstance(crime, Crime))
         assert(isinstance(rapsheet, Rapsheet))
         assert(isinstance(current_node, RuleSetNode))
 
         if self.graph[current_node] == []:
-            return (None, False)
+            return (current_node, False)
 
         for (dest, predicate) in self.graph[current_node]:
             assert(type(predicate) == type(lambda x, y: x + y))
@@ -155,20 +164,27 @@ class RuleSet:
 
         messages = []
 
-        current_node = self.start_node
-        while current_node != None and len(self.graph[current_node]) > 0:
+        try:
+            current_node = self.start_node
+            while current_node != None and len(self.graph[current_node]) > 0:
+                current_message = current_node.message
+                if current_message != "":
+                    messages.append(current_message)
+                current_node, failed = self.step(crime, rapsheet, current_node)
+                if failed:
+                    messages.append("Inconclusive: unable to find an end result.")
+                    return (None, messages)
+                    
+            #this code can be cleaned up
             current_message = current_node.message
             if current_message != "":
                 messages.append(current_message)
-            current_node, failed = self.step(crime, rapsheet, current_node)
-            if failed:
-                return (None, "Inconclusive: unable to find an end result.")
-        #this code can be cleaned up
-        current_message = current_node.message
-        if current_message != "":
-            messages.append(current_message)
 
-        return (current_node, messages)
+            return (current_node, messages)
+
+        except:
+            messages.append("Inconclusive: unable to find an end result.")
+            return (None, messages)
 
     """
     Sets the start node of the graph, and connects all nodes of the graph together
