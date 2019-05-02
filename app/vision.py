@@ -245,7 +245,7 @@ def detect_document(rap):
         pageCount += 1
 
     rapsheet.crimes=clean_crimes(rapsheet.crimes)
-    rapsheet.print_crimes()
+    # rapsheet.print_crimes()
     # print(info)
     rapsheet = translateRapsheet(rapsheet)
     return rapsheet
@@ -355,12 +355,30 @@ def getDate(dateString):
 
     return None
 
+def getResTime(result, word):
+    if word in result:
+        initIndex=result.index(word)
+        while initIndex > 0 and initIndex < len(word) and word[initIndex] != ",":
+            initIndex -= 1
+
+        result[initIndex:result.index(word)]
+    else:
+       return "None"
+
+def createResultDict(result):
+    res_dict={}
+    res_dict["fine"]="FINE" in result
+    res_dict["probation"]=  getResTime(result, "PROBATION")
+    res_dict["jail"]= getResTime(result, "JAIL")
+
+    return res_dict
+
 def translateCrime (crime):
     crime_type = crime.crime_type if crime.crime_type != "" else "N/A"
-    result = crime.result if crime.result !="" else crime.dispo if crime.dispo!="" else "NO DISPO AVAILABLE"
     convict_date = crime.date
     offense_code = crime.offense_code
     # print(crime_type+" | " + result+" | " + convict_date.strftime('%m/%d/%Y') +" | "+ offense_code)
+    result=createResultDict(crime.result)
     newCrime=Crime(crime_type, result, convict_date, offense_code, "", "")
     return newCrime
 
