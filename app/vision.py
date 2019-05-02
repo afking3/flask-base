@@ -257,7 +257,7 @@ def detect_document(rap):
 def dupCheck(crime, crimes):
 
     for cr in crimes:
-        if crime.offense_code == cr.offense_code and crime.date == cr.date:
+        if crime.offense_code in cr.offense_code and crime.date == cr.date:
             return True
 
     return False
@@ -317,9 +317,13 @@ def dispo_clean(crime):
 
     return crime
 
+#Indicates if a crime has no useful information
+def crimeIsNotBlank(crime):
+   crime.offense_code!="" or crime.dispo!="" and crime.result != ""
+
 # Cleans crimes parsed from rap sheet
 def clean_crimes(crimes):
-    list(filter(lambda a: a.offense_code!="", crimes))
+    list(filter(lambda a:  crimeIsNotBlank(a), crimes))
     clean=[]
     for crime in crimes:
         if not crime.date == None:
@@ -348,7 +352,7 @@ def translateCrime (crime):
     result = crime.result if crime.result !="" else crime.dispo
     convict_date = crime.date
     offense_code = crime.offense_code
-    print(crime_type+" | " + result+" | " + convict_date.strftime('%m/%d/%Y') +" | "+ offense_code)
+    # print(crime_type+" | " + result+" | " + convict_date.strftime('%m/%d/%Y') +" | "+ offense_code)
     newCrime=Crime(crime_type, result, convict_date, offense_code, "", "")
     return newCrime
 
