@@ -363,11 +363,11 @@ def getResTime(result, word):
 
         result[initIndex:result.index(word)]
     else:
-       return "None"
+       return "none"
 
 def createResultDict(result):
     res_dict={}
-    res_dict["fine"]="FINE" in result
+    res_dict["fine"]= "FINE" in result
     res_dict["probation"]=  getResTime(result, "PROBATION")
     res_dict["jail"]= getResTime(result, "JAIL")
 

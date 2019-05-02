@@ -25,12 +25,12 @@ def getOutputFromRapsheet(rap):
     rules = rs.RuleSet()
     rapsheet_results = rules.resultsFromRapSheet(rapsheet)
 
-    print("------------------------")
-    for crime in rapsheet.crimes:
-        crime.printCrime()
-    print("------------------------")
-    print(rapsheet_results)
-    print("------------------------")
+    # print("------------------------")
+    # for crime in rapsheet.crimes:
+    #     crime.printCrime()
+    # print("------------------------")
+    # print(rapsheet_results)
+    # print("------------------------")
 
     return (rapsheet, rapsheet_results)
 
