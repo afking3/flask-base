@@ -141,13 +141,13 @@ class RuleSet:
         assert(isinstance(current_node, RuleSetNode))
 
         if self.graph[current_node] == []:
-            return (None, false)
+            return (None, False)
 
         for (dest, predicate) in self.graph[current_node]:
             assert(type(predicate) == type(lambda x, y: x + y))
             if predicate(crime, rapsheet):
-                return (dest, false)
-        return (None, true)
+                return (dest, False)
+        return (None, True)
 
     def evaluate(self, crime, rapsheet):
         assert(isinstance(crime, Crime))
@@ -156,7 +156,6 @@ class RuleSet:
         messages = []
 
         current_node = self.start_node
-        failed = false
         while current_node != None and len(self.graph[current_node]) > 0:
             current_message = current_node.message
             if current_message != "":
