@@ -245,9 +245,10 @@ def detect_document(rap):
         pageCount += 1
 
     rapsheet.crimes=clean_crimes(rapsheet.crimes)
-
+    rapsheet.print_crimes()
     # print(info)
-    return translateRapsheet(rapsheet)
+    rapsheet = translateRapsheet(rapsheet)
+    return rapsheet
     #print(lines)
 
 # def codeChecker (codeType, line, Crimes):
@@ -256,7 +257,7 @@ def detect_document(rap):
 def dupCheck(crime, crimes):
 
     for cr in crimes:
-        if crime.offense_code == cr.offense_code and crime.date == cr.date:
+        if crime.offense_code in cr.offense_code and crime.date == cr.date:
             return True
 
     return False
@@ -314,11 +315,18 @@ def dispo_clean(crime):
         if len(crime.dispo.split(similar))>1:
             crime.set_dispo(crime.dispo.split(similar)[1])
 
+    if crime.dispo=="NO" or crime.dispo == ":NO":
+        crime.dispo="NO DISPO AVAILABLE"
+
     return crime
+
+#Indicates if a crime has no useful information
+def crimeIsNotBlank(crime): 
+    not ("#4" in crime.offense_code) and crime.offense_code!="" or crime.dispo!="" and crime.result != ""
 
 # Cleans crimes parsed from rap sheet
 def clean_crimes(crimes):
-    list(filter(lambda a: a.offense_code!="", crimes))
+    list(filter(lambda a:  crimeIsNotBlank(a), crimes))
     clean=[]
     for crime in crimes:
         if not crime.date == None:
@@ -326,7 +334,12 @@ def clean_crimes(crimes):
     clean=removeDupCrimes(clean)
 
     for crime in crimes:
+        crime.result = crime.result.replace(":","")
+        crime.dispo = crime.dispo.replace(":","")
+        crime.crime_type=crime.crime_type.replace(":","")
         crime=dispo_clean(crime)
+
+    list(filter(lambda a:  crimeIsNotBlank(a), crimes))
 
     return clean
 
@@ -343,12 +356,13 @@ def getDate(dateString):
     return None
 
 def translateCrime (crime):
-    crime_type = crime.crime_type
-    result = crime.result
+    crime_type = crime.crime_type if crime.crime_type != "" else "N/A"
+    result = crime.result if crime.result !="" else crime.dispo if crime.dispo!="" else "NO DISPO AVAILABLE"
     convict_date = crime.date
     offense_code = crime.offense_code
-
-    return Crime(crime_type, result, convict_date, offense_code, "", "")
+    # print(crime_type+" | " + result+" | " + convict_date.strftime('%m/%d/%Y') +" | "+ offense_code)
+    newCrime=Crime(crime_type, result, convict_date, offense_code, "", "")
+    return newCrime
 
 
 
@@ -362,8 +376,8 @@ def translateRapsheet(rapsheet):
 
      
 if __name__ == "__main__":
-    rap = detect_document('google_vision/pdf/Sample RAP Sheet-rotated (1).pdf')
-    rap.print_crimes()
+    rap = detect_document('Sample_RAP_Sheet-rotated.pdf')
+    
 
 # info={'Crimes':{}}
 # detect_document(r"images/Sample RAP Sheet-rotated-3.jpg", info)

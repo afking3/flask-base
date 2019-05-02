@@ -9,6 +9,10 @@ class Rapsheet():
     def addCrime(self, crime):
         self.crimes.append(crime)
 
+    def print(self):
+        for crime in self.crimes:
+            crime.printCrime()
+
 class Crime():
     def __init__(self, crime_type, result, convict_date, offense_code, prob_status, nonviolent_nonserious):
         self.crime_type = crime_type
@@ -17,6 +21,16 @@ class Crime():
         self.offense_code = offense_code
         self.probation_status = prob_status
         self.nonviolent_nonserious = nonviolent_nonserious
+
+    def printCrime(self):
+        string = ""
+        string += self.crime_type + " | "
+        string += self.result + " | "
+        string += self.conviction_date.strftime('%m/%d/%Y') + " | "
+        string += self.offense_code + " | "
+        string += self.probation_status + " | "
+        string += self.nonviolent_nonserious + " | "
+        print(string)
 
 example = Rapsheet([
         Crime("Infraction", "Fine", datetime.now(), None, None, None)
@@ -126,11 +140,14 @@ class RuleSet:
         assert(isinstance(rapsheet, Rapsheet))
         assert(isinstance(current_node, RuleSetNode))
 
+        if self.graph[current_node] == []:
+            return (None, False)
+
         for (dest, predicate) in self.graph[current_node]:
             assert(type(predicate) == type(lambda x, y: x + y))
             if predicate(crime, rapsheet):
-                return dest
-        return None
+                return (dest, False)
+        return (None, True)
 
     def evaluate(self, crime, rapsheet):
         assert(isinstance(crime, Crime))
@@ -142,13 +159,13 @@ class RuleSet:
         while current_node != None and len(self.graph[current_node]) > 0:
             current_message = current_node.message
             if current_message != "":
-                #print(current_node.name, current_message)
                 messages.append(current_message)
-            current_node = self.step(crime, rapsheet, current_node)
+            current_node, failed = self.step(crime, rapsheet, current_node)
+            if failed:
+                return (None, "Inconclusive: unable to find an end result.")
         #this code can be cleaned up
         current_message = current_node.message
         if current_message != "":
-            #print(current_node.name, current_message)
             messages.append(current_message)
 
         return (current_node, messages)
