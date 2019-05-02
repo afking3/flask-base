@@ -163,23 +163,28 @@ class RuleSet:
         assert(isinstance(rapsheet, Rapsheet))
 
         messages = []
-
-        current_node = self.start_node
-        while current_node != None and len(self.graph[current_node]) > 0:
+        
+        try:
+            current_node = self.start_node
+            while current_node != None and len(self.graph[current_node]) > 0:
+                current_message = current_node.message
+                if current_message != "":
+                    messages.append(current_message)
+                current_node, failed = self.step(crime, rapsheet, current_node)
+                if failed:
+                    messages.append("Inconclusive: unable to find an end result.")
+                    return (None, messages)
+                    
+            #this code can be cleaned up
             current_message = current_node.message
             if current_message != "":
                 messages.append(current_message)
-            current_node, failed = self.step(crime, rapsheet, current_node)
-            if failed:
-                messages.append("Inconclusive: unable to find an end result.")
-                return (None, messages)
-                
-        #this code can be cleaned up
-        current_message = current_node.message
-        if current_message != "":
-            messages.append(current_message)
 
-        return (current_node, messages)
+            return (current_node, messages)
+
+        except:
+            messages.append("Inconclusive: unable to find an end result.")
+            return (None, messages)
 
     """
     Sets the start node of the graph, and connects all nodes of the graph together
