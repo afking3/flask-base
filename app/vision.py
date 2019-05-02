@@ -245,7 +245,7 @@ def detect_document(rap):
         pageCount += 1
 
     rapsheet.crimes=clean_crimes(rapsheet.crimes)
-    # rapsheet.print_crimes()
+    rapsheet.print_crimes()
     # print(info)
     rapsheet = translateRapsheet(rapsheet)
     return rapsheet
@@ -315,11 +315,14 @@ def dispo_clean(crime):
         if len(crime.dispo.split(similar))>1:
             crime.set_dispo(crime.dispo.split(similar)[1])
 
+    if crime.dispo=="NO" or crime.dispo == ":NO":
+        crime.dispo="NO DISPO AVAILABLE"
+
     return crime
 
 #Indicates if a crime has no useful information
-def crimeIsNotBlank(crime):
-   crime.offense_code!="" or crime.dispo!="" and crime.result != ""
+def crimeIsNotBlank(crime): 
+    not ("#4" in crime.offense_code) and crime.offense_code!="" or crime.dispo!="" and crime.result != ""
 
 # Cleans crimes parsed from rap sheet
 def clean_crimes(crimes):
@@ -332,6 +335,8 @@ def clean_crimes(crimes):
 
     for crime in crimes:
         crime=dispo_clean(crime)
+
+    list(filter(lambda a:  crimeIsNotBlank(a), crimes))
 
     return clean
 
@@ -349,7 +354,7 @@ def getDate(dateString):
 
 def translateCrime (crime):
     crime_type = crime.crime_type if crime.crime_type != "" else "N/A"
-    result = crime.result if crime.result !="" else crime.dispo
+    result = crime.result if crime.result !="" else crime.dispo if crime.dispo!="" else "NO DISPO AVAILABLE"
     convict_date = crime.date
     offense_code = crime.offense_code
     # print(crime_type+" | " + result+" | " + convict_date.strftime('%m/%d/%Y') +" | "+ offense_code)
