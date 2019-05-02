@@ -145,7 +145,7 @@ class RuleSet:
         assert(isinstance(current_node, RuleSetNode))
 
         if self.graph[current_node] == []:
-            return (None, False)
+            return (current_node, False)
 
         for (dest, predicate) in self.graph[current_node]:
             assert(type(predicate) == type(lambda x, y: x + y))
@@ -168,6 +168,7 @@ class RuleSet:
             if failed:
                 messages.append("Inconclusive: unable to find an end result.")
                 return (None, messages)
+                
         #this code can be cleaned up
         current_message = current_node.message
         if current_message != "":
