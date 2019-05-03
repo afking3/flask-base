@@ -361,16 +361,15 @@ def getResTime(result, word):
         while initIndex > 0 and initIndex < len(word) and word[initIndex] != ",":
             initIndex -= 1
 
-        result[initIndex:result.index(word)]
+        return result[initIndex:result.index(word)]
     else:
        return "none"
 
 def createResultDict(result):
     res_dict={}
     res_dict["fine"]= "FINE" in result
-    res_dict["probation"]=  getResTime(result, "PROBATION")
-    res_dict["jail"]= getResTime(result, "JAIL")
-
+    res_dict["probation"]=  "probation" if "PROBATION" in result else "none"
+    res_dict["jail"]= "jail" if "jail" in result else "jail"
     return res_dict
 
 def translateCrime (crime):
@@ -379,7 +378,7 @@ def translateCrime (crime):
     offense_code = crime.offense_code
     # print(crime_type+" | " + result+" | " + convict_date.strftime('%m/%d/%Y') +" | "+ offense_code)
     result=createResultDict(crime.result)
-    newCrime=Crime(crime_type, result, convict_date, offense_code, "", "")
+    newCrime=Crime(crime_type, result, convict_date, offense_code, "", "", crime.offense_description)
     return newCrime
 
 
@@ -389,6 +388,8 @@ def translateRapsheet(rapsheet):
 
     for crime in rapsheet.crimes:
         newRapsheet.addCrime(translateCrime(crime))
+
+    newRapsheet.crimes = list(filter(lambda a: not "#" in a.offense_code and not "TOC:F" in a.offense_code  , newRapsheet.crimes))
 
     return newRapsheet
 

@@ -16,18 +16,24 @@ class Rapsheet():
 class Crime():
 
     ''' '''
-    def __init__(self, crime_type, result, convict_date, offense_code, prob_status, nonviolent_nonserious):
+    def __init__(self, crime_type, result, convict_date, offense_code, prob_status, nonviolent_nonserious, offense_description):
         self.crime_type = crime_type
         self.result = result
         self.conviction_date = convict_date
         self.offense_code = offense_code
         self.probation_status = prob_status
         self.nonviolent_nonserious = nonviolent_nonserious
+        self.offense_description=offense_description
 
     def printCrime(self):
         string = ""
         string += self.crime_type + " | "
-        string += self.result["probation"] + " | " + self.result["jail"] + " | " + self.result["fine"]
+        if(self.result["probation"]):
+            string += self.result["probation"] + " | "
+        if(self.result["jail"]):
+            string += self.result["jail"] + " | "
+        if(self.result["fine"]):
+            string += str(self.result["fine"]) + " | "
         string += self.conviction_date.strftime('%m/%d/%Y') + " | "
         string += self.offense_code + " | "
         string += self.probation_status + " | "
@@ -35,7 +41,7 @@ class Crime():
         print(string)
 
 example = Rapsheet([
-        Crime("Infraction", "Fine", datetime.now(), None, None, None)
+        Crime("Infraction", "Fine", datetime.now(), None, None, None, "Theft")
     ])
 
 prop47codes = ["487", "490.2", "459.5", "459", "461", "496", "666", "473", "476", "476a", "11350", "11357", "11377"];
@@ -306,7 +312,7 @@ class RuleSet:
         self.graph = graph
 
 
-c = Crime("Felony", "Prison", None, None, "487", "Not Completed")
+c = Crime("Felony", "Prison", None, None, "487", "Not Completed", "Theft")
 given = Rapsheet(
 [
     c
