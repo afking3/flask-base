@@ -245,7 +245,7 @@ def detect_document(rap):
         pageCount += 1
 
     rapsheet.crimes=clean_crimes(rapsheet.crimes)
-    # rapsheet.print_crimes()
+    rapsheet.print_crimes()
     # print(info)
     rapsheet = translateRapsheet(rapsheet)
     return rapsheet
@@ -377,7 +377,7 @@ def translateCrime (crime):
     convict_date = crime.date
     offense_code = crime.offense_code
     # print(crime_type+" | " + result+" | " + convict_date.strftime('%m/%d/%Y') +" | "+ offense_code)
-    result=createResultDict(crime.result)
+    result=createResultDict(crime.result) if crime.crime_type != "" else {"fine":False,"probation":"none","jail":"none"}
     newCrime=Crime(crime_type, result, convict_date, offense_code, "", "", crime.offense_description)
     return newCrime
 

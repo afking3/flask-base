@@ -38,6 +38,7 @@ class Crime():
         string += self.offense_code + " | "
         string += self.probation_status + " | "
         string += self.nonviolent_nonserious + " | "
+        string+= self.offense_description
         print(string)
 
 example = Rapsheet([
