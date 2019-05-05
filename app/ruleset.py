@@ -16,7 +16,7 @@ class Rapsheet():
 class Crime():
 
     ''' '''
-    def __init__(self, crime_type, result, convict_date, offense_code, prob_status, nonviolent_nonserious, offense_description):
+    def __init__(self, crime_type, result, convict_date, offense_code, prob_status= None, nonviolent_nonserious = None, offense_description = None):
         self.crime_type = crime_type
         self.result = result
         self.conviction_date = convict_date
@@ -60,16 +60,20 @@ def isAB109Elig(crime, rapsheet):
     return crime.nonviolent_nonserious
 
 def isPrison(crime, rapsheet):
-    return crime.result["jail"] != False and crime.result["jail"] != None and crime.result["jail"] != "none"
+    return False
+    #return crime.result["jail"] != False and crime.result["jail"] != None and crime.result["jail"] != "none"
+
+def isResultValid(crime, rapsheet, field):
+    return crime.result[field] != False and crime.result[field] != None and crime.result[field] != "none"
 
 def isCountyJail(crime, rapsheet):
-    return crime.result["jail"] != False and crime.result["jail"] != None and crime.result["jail"] != "none"
+    return isResultValid(crime, rapsheet, "jail") and not isResultValid(crime, rapsheet, "probation")
 
 def isProbation(crime, rapsheet):
-    return crime.result["probation"] != False and crime.result["probation"] != None and crime.result["probation"] != "none"
+    return isResultValid(crime, rapsheet, "probation")
 
 def isUpTo1year(crime, rapsheet):
-    return True
+    return (isResultValid(crime, rapsheet, "jail") or isResultValid(crime, rapsheet, "fine")) and not isResultValid(crime, rapsheet, "probation")
 
 def isFelony(crime, rapsheet):
     return crime.crime_type == "Felony"
@@ -157,13 +161,16 @@ class RuleSet:
         assert(isinstance(current_node, RuleSetNode))
 
         if self.graph[current_node] == []:
+            print("reached end node")
             return (current_node, False)
 
         for (dest, predicate) in self.graph[current_node]:
             assert(type(predicate) == type(lambda x, y: x + y))
             if predicate(crime, rapsheet):
+                print("stepping")
                 return (dest, False)
-        return (None, True)
+        print("failed")
+        return (current_node, True)
 
     def evaluate(self, crime, rapsheet):
         assert(isinstance(crime, Crime))
@@ -171,6 +178,24 @@ class RuleSet:
 
         messages = []
 
+
+        current_node = self.start_node
+        while current_node != None and len(self.graph[current_node]) > 0:
+            current_message = current_node.message
+            if current_message != "":
+                messages.append(current_message)
+            current_node, failed = self.step(crime, rapsheet, current_node)
+            if failed:
+                messages.append("Inconclusive: unable to find an end result.")
+                return (current_node, messages)
+
+        #this code can be cleaned up
+        current_message = current_node.message
+        if current_message != "":
+            messages.append(current_message)
+
+        return (current_node, messages)
+        """
         try:
             current_node = self.start_node
             while current_node != None and len(self.graph[current_node]) > 0:
@@ -181,7 +206,7 @@ class RuleSet:
                 messages.append(current_node.name)
                 if failed:
                     messages.append("Inconclusive: unable to find an end result.")
-                    return (None, messages)
+                    return (current_node, messages)
 
             #this code can be cleaned up
             current_message = current_node.message
@@ -191,8 +216,10 @@ class RuleSet:
             return (current_node, messages)
 
         except:
+            print("boofed it")
             messages.append("Inconclusive: unable to find an end result.")
-            return (None, messages)
+            return (current_node, messages)
+        """
 
     """
     Sets the start node of the graph, and connects all nodes of the graph together
@@ -313,12 +340,31 @@ class RuleSet:
         self.graph = graph
 
 
-c = Crime("Felony", "Prison", None, None, "487", "Not Completed", "Theft")
-given = Rapsheet(
-[
-    c
-])
+# c = Crime("Felony", "Prison", None, None, "487", "Not Completed", "Theft")
+# given = Rapsheet(
+# [
+#     c
+# ])
 
-rs = RuleSet()
-g = rs.createGraph()
-rs.evaluate(c, given)
+# rs = RuleSet()
+# g = rs.createGraph()
+# rs.evaluate(c, given)
+
+if __name__ == "__main__":
+    d = {}
+    d["fine"] = True
+    d["jail"] = "jailss"
+    d["probation"] = "probss"
+    t = "Misdemeanor"
+    date = datetime(2007, 6, 6);
+    c = Crime(t, d, date, "12500(A)", None, None, None)
+
+    date = datetime(2007, 4, 3);
+    c2 = Crime(t, d, date, ":CNT:002 12500(A)", None, None, None)
+
+    r = Rapsheet([c, c2])
+
+    rs = RuleSet()
+    rs.createGraph()
+    res = rs.resultsFromRapSheet(r)
+    print(res)

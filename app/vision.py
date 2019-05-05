@@ -308,9 +308,8 @@ def dispo_clean(crime):
         similar=get_similar_word("DISPO", crime.offense_description)
         desc_split=crime.offense_description.split(similar)
         if len(desc_split) > 1:
-            description = desc_split[0].strip('-')
+            description = desc_split[0].strip(':-')
             crime.set_offense_description(description)
-            print(crime.offense_description)
             crime.set_dispo(desc_split[1])
     if(crime.dispo !="" and check_if_term_present("DISPO",crime.dispo)):
         similar=get_similar_word("DISPO", crime.dispo)
@@ -337,6 +336,10 @@ def clean_crimes(crimes):
 
     for crime in crimes:
         crime.result = crime.result.replace(":","")
+        crime.offense_code = crime.offense_code.strip(':-')
+        crime.offense_code = crime.offense_code.replace("WARRANT", "")
+        if crime.offense_code.startswith("CNT"):
+            crime.offense_code = "".join(crime.offense_code.split(' ')[1:])
         crime.dispo = crime.dispo.replace(":","")
         crime.crime_type=crime.crime_type.replace(":","")
         crime=dispo_clean(crime)
