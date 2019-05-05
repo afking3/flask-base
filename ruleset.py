@@ -67,13 +67,13 @@ def isResultValid(crime, rapsheet, field):
     return crime.result[field] != False and crime.result[field] != None and crime.result[field] != "none"
 
 def isCountyJail(crime, rapsheet):
-    return isResultValid(crime, rapsheet, "jail") and not isResultValid(crime, rapsheet, "probation")
+    return crime.crime_type == "Felony" and isResultValid(crime, rapsheet, "jail") and not isResultValid(crime, rapsheet, "probation")
 
 def isProbation(crime, rapsheet):
     return isResultValid(crime, rapsheet, "probation")
 
 def isUpTo1year(crime, rapsheet):
-    return (isResultValid(crime, rapsheet, "jail") or isResultValid(crime, rapsheet, "fine")) and not isResultValid(crime, rapsheet, "probation")
+    return (crime.crime_type == "Misdemeanor" or crime.crime_type == "Infraction") and (isResultValid(crime, rapsheet, "jail") or isResultValid(crime, rapsheet, "fine")) and not isResultValid(crime, rapsheet, "probation")
 
 def isFelony(crime, rapsheet):
     return crime.crime_type == "Felony"
