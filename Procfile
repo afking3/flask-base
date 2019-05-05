@@ -1,1 +1,2 @@
-worker: python upload.py
+web: gunicorn main:app
+worker: python app/upload.py
