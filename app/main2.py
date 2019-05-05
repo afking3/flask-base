@@ -25,12 +25,12 @@ def getOutputFromRapsheet(rap):
     rules = rs.RuleSet()
     rapsheet_results = rules.resultsFromRapSheet(rapsheet)
 
-    # print("------------------------")
-    # for crime in rapsheet.crimes:
-    #     crime.printCrime()
-    # print("------------------------")
-    # print(rapsheet_results)
-    # print("------------------------")
+    print("------------------------")
+    for crime in rapsheet.crimes:
+        crime.printCrime()
+    print("------------------------")
+    print(rapsheet_results)
+    print("------------------------")
 
     return (rapsheet, rapsheet_results)
 
@@ -120,15 +120,15 @@ def createExcelSheet(output, filename, path):
     return path + filename
 
 if __name__ == "__main__":
-    rap = rs.Rapsheet(
-        [
-            rs.Crime("Felony", "County Jail", "empty", None, "Not Completed", True),
-        ])
-    res = [
-        [["dis"], "Discretionary"],
-    ]
-    x = formatOutput((rap, res))
-    path = createExcelSheet(x, "test2.xls", "tests")
-    print(path)
-    x, y = getOutputFromRapsheet("google_vision/pdf/Sample RAP Sheet-rotated (1).pdf")
+    # rap = rs.Rapsheet(
+    #     [
+    #         rs.Crime("Felony", "County Jail", "empty", None, "Not Completed", True),
+    #     ])
+    # res = [
+    #     [["dis"], "Discretionary"],
+    # ]
+    # x = formatOutput((rap, res))
+    # path = createExcelSheet(x, "test2.xls", "tests")
+    # print(path)
+    x, y = getOutputFromRapsheet("Sample_RAP_Sheet-rotated.pdf")
     print(x, y)

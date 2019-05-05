@@ -16,7 +16,7 @@ CLIENT = vision.ImageAnnotatorClient(credentials=CREDENTIALS)
 
 # Gets word that is "close" to [term] by weighted levenshtein
 # in [line]
-def get_similar_word (term, line):  
+def get_similar_word(term, line):  
     new_line=""
     if type(line) == list:
         for word in line:
@@ -245,7 +245,7 @@ def detect_document(rap):
         pageCount += 1
 
     rapsheet.crimes=clean_crimes(rapsheet.crimes)
-    # rapsheet.print_crimes()
+    rapsheet.print_crimes()
     # print(info)
     rapsheet = translateRapsheet(rapsheet)
     return rapsheet
@@ -308,7 +308,9 @@ def dispo_clean(crime):
         similar=get_similar_word("DISPO", crime.offense_description)
         desc_split=crime.offense_description.split(similar)
         if len(desc_split) > 1:
-            crime.set_offense_description(desc_split[0])
+            description = desc_split[0].strip('-')
+            crime.set_offense_description(description)
+            print(crime.offense_description)
             crime.set_dispo(desc_split[1])
     if(crime.dispo !="" and check_if_term_present("DISPO",crime.dispo)):
         similar=get_similar_word("DISPO", crime.dispo)
@@ -361,16 +363,15 @@ def getResTime(result, word):
         while initIndex > 0 and initIndex < len(word) and word[initIndex] != ",":
             initIndex -= 1
 
-        result[initIndex:result.index(word)]
+        return result[initIndex:result.index(word)]
     else:
        return "none"
 
 def createResultDict(result):
     res_dict={}
     res_dict["fine"]= "FINE" in result
-    res_dict["probation"]=  getResTime(result, "PROBATION")
-    res_dict["jail"]= getResTime(result, "JAIL")
-
+    res_dict["probation"]=  "probation" if "PROBATION" in result else "none"
+    res_dict["jail"]= "jail" if "jail" in result else "jail"
     return res_dict
 
 def translateCrime (crime):
@@ -378,8 +379,8 @@ def translateCrime (crime):
     convict_date = crime.date
     offense_code = crime.offense_code
     # print(crime_type+" | " + result+" | " + convict_date.strftime('%m/%d/%Y') +" | "+ offense_code)
-    result=createResultDict(crime.result)
-    newCrime=Crime(crime_type, result, convict_date, offense_code, "", "")
+    result=createResultDict(crime.result) if crime.crime_type != "" else {"fine":False,"probation":"none","jail":"none"}
+    newCrime=Crime(crime_type, result, convict_date, offense_code, "", "", crime.offense_description)
     return newCrime
 
 
@@ -389,6 +390,8 @@ def translateRapsheet(rapsheet):
 
     for crime in rapsheet.crimes:
         newRapsheet.addCrime(translateCrime(crime))
+
+    newRapsheet.crimes = list(filter(lambda a: not "#" in a.offense_code and not "TOC:F" in a.offense_code  , newRapsheet.crimes))
 
     return newRapsheet
 
