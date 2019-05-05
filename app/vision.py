@@ -16,7 +16,7 @@ CLIENT = vision.ImageAnnotatorClient(credentials=CREDENTIALS)
 
 # Gets word that is "close" to [term] by weighted levenshtein
 # in [line]
-def get_similar_word (term, line):  
+def get_similar_word(term, line):  
     new_line=""
     if type(line) == list:
         for word in line:
@@ -308,7 +308,9 @@ def dispo_clean(crime):
         similar=get_similar_word("DISPO", crime.offense_description)
         desc_split=crime.offense_description.split(similar)
         if len(desc_split) > 1:
-            crime.set_offense_description(desc_split[0])
+            description = desc_split[0].strip('-')
+            crime.set_offense_description(description)
+            print(crime.offense_description)
             crime.set_dispo(desc_split[1])
     if(crime.dispo !="" and check_if_term_present("DISPO",crime.dispo)):
         similar=get_similar_word("DISPO", crime.dispo)
