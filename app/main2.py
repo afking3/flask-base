@@ -72,6 +72,7 @@ def formatOutput(_input):
         result = results[index]
         new_obj["expunge_result"] = result["result"]
         new_obj["expunge_messages"] = result["messages"]
+        new_obj["offense_description"]=crime.offense_description
         #new_obj["expunge_result"] = ""
         #new_obj["expunge_messages"] = ""
         final_crimes.append(new_obj)
