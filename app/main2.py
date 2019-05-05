@@ -120,15 +120,15 @@ def createExcelSheet(output, filename, path):
     return path + filename
 
 if __name__ == "__main__":
-    rap = rs.Rapsheet(
-        [
-            rs.Crime("Felony", "County Jail", "empty", None, "Not Completed", True),
-        ])
-    res = [
-        [["dis"], "Discretionary"],
-    ]
-    x = formatOutput((rap, res))
-    path = createExcelSheet(x, "test2.xls", "tests")
-    print(path)
-    x, y = getOutputFromRapsheet("google_vision/pdf/Sample RAP Sheet-rotated (1).pdf")
+    # rap = rs.Rapsheet(
+    #     [
+    #         rs.Crime("Felony", "County Jail", "empty", None, "Not Completed", True),
+    #     ])
+    # res = [
+    #     [["dis"], "Discretionary"],
+    # ]
+    # x = formatOutput((rap, res))
+    # path = createExcelSheet(x, "test2.xls", "tests")
+    # print(path)
+    x, y = getOutputFromRapsheet("Sample_RAP_Sheet-rotated.pdf")
     print(x, y)

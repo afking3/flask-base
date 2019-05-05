@@ -9,7 +9,7 @@ class Rapsheet():
     def addCrime(self, crime):
         self.crimes.append(crime)
 
-    def print(self):
+    def print_rap(self):
         for crime in self.crimes:
             crime.printCrime()
 
