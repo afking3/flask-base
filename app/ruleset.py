@@ -16,7 +16,7 @@ class Rapsheet():
 class Crime():
 
     ''' '''
-    def __init__(self, crime_type, result, convict_date, offense_code, prob_status, nonviolent_nonserious, offense_description):
+    def __init__(self, crime_type, result, convict_date, offense_code, prob_status= None, nonviolent_nonserious = None, offense_description = None):
         self.crime_type = crime_type
         self.result = result
         self.conviction_date = convict_date
