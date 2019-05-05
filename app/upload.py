@@ -32,7 +32,7 @@ def download(filename):
     x = main2.getOutputFromRapsheet(filename)
     output = main2.formatOutput(x)
     print(output)
-    excel = main2.createExcelSheet(output, "output.xls", "app/output/")
+    excel = main2.createExcelSheet(output, "output.xls", "output/")
     return render_template("step3.html", data=output, back=url_for('show', filename=filename), next=url_for('download', filename=filename))
 
 @app.route('/return-files/')
