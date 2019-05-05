@@ -29,7 +29,8 @@ def assertResults(rapsheet, list_of_expected):
 def test_infraction_not_eligible():
     given = rs.Rapsheet(
         [
-            rs.Crime("Infraction", "Fine", week_ago, None, None, None)
+            rs.Crime("Infraction", {"fine": True, "probation": "none", "jail": "none"},
+             week_ago, None, None, None)
         ])
     expected = [
         [[], "Not Eligible"]

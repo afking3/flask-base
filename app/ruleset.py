@@ -174,7 +174,7 @@ class RuleSet:
 
         messages = []
 
-
+        
         current_node = self.start_node
         while current_node != None and len(self.graph[current_node]) > 0:
             current_message = current_node.message
