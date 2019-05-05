@@ -40,8 +40,9 @@
       <th>Conviction Date</th>
       <th>Offense Code</th>
       <th>Probability Status</th>
+      <th>Expunge Results</th>
       <th>Non-violent Non-serious</th>
-      <th>offense description</th>
+      <th>Offense description</th>
     </tr>
     
     {% for d in data %}
@@ -51,6 +52,7 @@
       <td>{{ d.convict_date }}</td>
       <td>{{d.offense_code}}</td>
       <td>{{d.prob_status}}</td>
+      <td>{{d.expunge_result}}</td>
       <td>{{d.nonviolent_nonserious}}</td>
       <td>{{d.offense_description}}</td>
     </tr>

@@ -94,7 +94,7 @@ def createExcelSheet(output, filename, path):
     # Specifying style
     style = xlwt.easyxf('font: bold 1')
 
-    headers = ["Crime Type", "Result", "Convict Date", "Offense Code", "Probation Status", "Expungement Result", "Expungment Messages"]
+    headers = ["Crime Type", "Result", "Convict Date", "Offense Code", "Probation Status", "Expungement Result", "Expungment Messages", "Offense Description"]
 
     assert len(output) > 0
     assert len(headers) == len(output[0])
@@ -112,6 +112,7 @@ def createExcelSheet(output, filename, path):
         sheet.write(next_row, 4, crime["prob_status"], style)
         sheet.write(next_row, 5, crime["expunge_result"], style)
         sheet.write(next_row, 6, crime["expunge_messages"], style)
+        sheet.write(next_row, 7, crime["offense_description"])
         next_row = next_row + 1
 
     # Writting on specified sheet
