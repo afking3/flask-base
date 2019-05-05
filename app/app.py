@@ -18,6 +18,7 @@ def allowed_file(filename):
 
 @app.route('/')
 def index():
+    print("accessed")
     return  render_template("index.html", link="/upload/")
 
 
