@@ -150,13 +150,16 @@ class RuleSet:
         assert(isinstance(current_node, RuleSetNode))
 
         if self.graph[current_node] == []:
+            print("reached end node")
             return (current_node, False)
 
         for (dest, predicate) in self.graph[current_node]:
             assert(type(predicate) == type(lambda x, y: x + y))
             if predicate(crime, rapsheet):
+                print("stepping")
                 return (dest, False)
-        return (None, True)
+        print("failed")
+        return (current_node, True)
 
     def evaluate(self, crime, rapsheet):
         assert(isinstance(crime, Crime))
@@ -164,6 +167,24 @@ class RuleSet:
 
         messages = []
 
+
+        current_node = self.start_node
+        while current_node != None and len(self.graph[current_node]) > 0:
+            current_message = current_node.message
+            if current_message != "":
+                messages.append(current_message)
+            current_node, failed = self.step(crime, rapsheet, current_node)
+            if failed:
+                messages.append("Inconclusive: unable to find an end result.")
+                return (current_node, messages)
+
+        #this code can be cleaned up
+        current_message = current_node.message
+        if current_message != "":
+            messages.append(current_message)
+
+        return (current_node, messages)
+        """
         try:
             current_node = self.start_node
             while current_node != None and len(self.graph[current_node]) > 0:
@@ -173,7 +194,7 @@ class RuleSet:
                 current_node, failed = self.step(crime, rapsheet, current_node)
                 if failed:
                     messages.append("Inconclusive: unable to find an end result.")
-                    return (None, messages)
+                    return (current_node, messages)
 
             #this code can be cleaned up
             current_message = current_node.message
@@ -183,8 +204,10 @@ class RuleSet:
             return (current_node, messages)
 
         except:
+            print("boofed it")
             messages.append("Inconclusive: unable to find an end result.")
-            return (None, messages)
+            return (current_node, messages)
+        """
 
     """
     Sets the start node of the graph, and connects all nodes of the graph together
@@ -313,4 +336,4 @@ given = Rapsheet(
 
 rs = RuleSet()
 g = rs.createGraph()
-rs.evaluate(c, given)
+print(rs.evaluate(c, given))
