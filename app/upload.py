@@ -3,13 +3,13 @@ import json
 import flask
 from flask import Flask, flash, request, redirect, url_for, render_template, send_from_directory, make_response, send_file
 from werkzeug.utils import secure_filename
-from __init__.py import create_app
+from __init__ import app
 import main2
 
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = set(['pdf'])
 
-app = create_app("production")
+
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
