@@ -27,9 +27,10 @@ def assertResults(rapsheet, list_of_expected):
 
 #path 1
 def test_infraction_not_eligible():
+    crime = {"fine": True, "probation": "none", "jail": "none"}
     given = rs.Rapsheet(
         [
-            rs.Crime("Infraction", {"fine": True, "probation": "none", "jail": "none"},
+            rs.Crime("Infraction", crime,
              week_ago, None, None, None)
         ])
     expected = [
@@ -40,9 +41,10 @@ def test_infraction_not_eligible():
 
 #path 2
 def test_infraction_mandatory():
+    crime = {"fine": True, "probation": "none", "jail": "none"}
     given = rs.Rapsheet(
         [
-            rs.Crime("Infraction", "Fine", two_years_ago, None, None, None)
+            rs.Crime("Infraction", crime, two_years_ago, None, None, None)
         ])
     expected = [
         [[],  "Mandatory"]
@@ -51,10 +53,11 @@ def test_infraction_mandatory():
 
 #path 3
 def test_infraction_discretionary():
+    crime = {"fine": True, "probation": "none", "jail": "none"}
     given = rs.Rapsheet(
         [
-            rs.Crime("Infraction", "Fine", two_years_ago, None, None, None),
-            rs.Crime("Infraction", "Fine", week_ago, None, None, None)
+            rs.Crime("Infraction", crime, two_years_ago, None, None, None),
+            rs.Crime("Infraction", crime, week_ago, None, None, None)
         ])
     #Fix this test
     expected = [
@@ -65,9 +68,11 @@ def test_infraction_discretionary():
 
 #path 4
 def test_misdemeanor_discretionary():
+    crime1 = {"fine": False, "probation": "none", "jail": "County Jail"}
+    crime2 = {"fine": True, "probation": "none", "jail": "none"}
     given = rs.Rapsheet(
         [
-            rs.Crime("Misdemeanor", "Up To A Year In County Jail", two_years_ago, None, None, None),
+            rs.Crime("Misdemeanor", crime1, two_years_ago, None, None, None),
             rs.Crime("Infraction", "Fine", week_ago, None, None, None)
         ])
     expected = [
@@ -78,9 +83,10 @@ def test_misdemeanor_discretionary():
 
 #path 5
 def test_misdemeanor_mandatory():
+    crime = {"fine": False, "probation": "none", "jail": "County Jail"}
     given = rs.Rapsheet(
         [
-            rs.Crime("Misdemeanor", "Up To A Year In County Jail", two_years_ago, None, None, None),
+            rs.Crime("Misdemeanor", crime, two_years_ago, None, None, None),
         ])
     expected = [
         [[], "Mandatory"],
@@ -89,9 +95,10 @@ def test_misdemeanor_mandatory():
 
 #path 6
 def test_misdemeanor_not_eligible():
+    crime = {"fine": False, "probation": "none", "jail": "County Jail"}
     given = rs.Rapsheet(
         [
-            rs.Crime("Misdemeanor", "Up To A Year In County Jail", week_ago, None, None, None),
+            rs.Crime("Misdemeanor", crime, week_ago, None, None, None),
         ])
     expected = [
         [[], "Not Eligible"],
@@ -100,9 +107,10 @@ def test_misdemeanor_not_eligible():
 
 #path 7
 def test_misdemeanor_mandatory2():
+    crime = {"fine": False, "probation": "yes", "jail": "none"}
     given = rs.Rapsheet(
         [
-            rs.Crime("Misdemeanor", "Probation", week_ago, None, "Completed", False),
+            rs.Crime("Misdemeanor", crime, week_ago, None, "Completed", False),
         ])
     expected = [
         [[], "Mandatory"],
