@@ -3,7 +3,7 @@ import json
 import flask
 from flask import Flask, flash, request, redirect, url_for, render_template, send_from_directory, make_response, send_file
 from werkzeug.utils import secure_filename
-from __init__ import create_app
+from __init__.py import create_app
 import main2
 
 UPLOAD_FOLDER = 'uploads'
