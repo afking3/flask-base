@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link href="../static/main.css" type="text/css" rel="stylesheet" />
+  <meta charset="UTF-8">
+  <script src="../static/scripts/jquery-3.3.1.min.js"></script>
+  <script src="../static/scripts/editfield.js" type="text/javascript"></script>
+  <script src="../static/scripts/fullpreview.js"></script>
+  <script>
+    function myFunction() {
+      window.print();
+    }
+  </script>
+  <script>
+    function download(){
+      return 
+    }
+  </script>
+  <title>Re-entry Tool</title>
+<body>
+  <div class="modal hidden">
+    <h1 id="close">Click anywhere to exit<h1>
+  </div>
+  <div class="modal hidden">
+    <iframe class="modalcontent" src="../static/images/placeholderfile.pdf"></iframe>
+    <h1 id= "close">Click anywhere to exit<h1>
+  </div>
+  <nav>
+    <img id="navlogo" src="../static/images/nlslalogo.png">
+  </nav>
+  <h1 class="titleleft">
+    Step 3: Results
+  <h1>
+  <p class="paragraphleft">Based on judicial laws in California and your records, we have identified the following crimes are eligible for expungement.
+  </p>
+  <table>
+    <tr>
+      <th>Crime Type</th>
+      <th>Result</th>
+      <th>Conviction Date</th>
+      <th>Offense Code</th>
+      <th>Probability Status</th>
+      <th>Expunge Results</th>
+      <th>Non-violent Non-serious</th>
+      <th>Offense description</th>
+    </tr>
+    
+    {% for d in data %}
+    <tr>
+      <td>{{ d.crime_type }}</td>
+      <td>{{ d.result }}</td>
+      <td>{{ d.convict_date }}</td>
+      <td>{{d.offense_code}}</td>
+      <td>{{d.prob_status}}</td>
+      <td>{{d.expunge_result}}</td>
+      <td>{{d.nonviolent_nonserious}}</td>
+      <td>{{d.offense_description}}</td>
+    </tr>
+    {% endfor %}
+   
+  </table>
+  <div id="buttons">
+    <p onclick="myFunction()" id="print_button">Print Results</p>
+    <a href="/return-files/" target="blank"><p class="button2" onclick="download_excel()">Download Results<Download Excel></p></a>
+    <p id="email_button" class="view">Email Results</p>
+  </div>
+
+  <div id="buttons">
+    <p class="button2"><a href="{{ back }}">Back</a></p>
+    <p class="button2"><a href="{{ next  }}">Next<a></p>
+  </div>
+</body>
+</html>
