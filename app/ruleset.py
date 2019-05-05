@@ -60,16 +60,20 @@ def isAB109Elig(crime, rapsheet):
     return crime.nonviolent_nonserious
 
 def isPrison(crime, rapsheet):
-    return crime.result["jail"] != False and crime.result["jail"] != None and crime.result["jail"] != "none"
+    return False
+    #return crime.result["jail"] != False and crime.result["jail"] != None and crime.result["jail"] != "none"
+
+def isResultValid(crime, rapsheet, field):
+    return crime.result[field] != False and crime.result[field] != None and crime.result[field] != "none"
 
 def isCountyJail(crime, rapsheet):
-    return crime.result["jail"] != False and crime.result["jail"] != None and crime.result["jail"] != "none"
+    return isResultValid(crime, rapsheet, "jail") and not isResultValid(crime, rapsheet, "probation")
 
 def isProbation(crime, rapsheet):
-    return crime.result["probation"] != False and crime.result["probation"] != None and crime.result["probation"] != "none"
+    return isResultValid(crime, rapsheet, "probation")
 
 def isUpTo1year(crime, rapsheet):
-    return True
+    return (isResultValid(crime, rapsheet, "jail") or isResultValid(crime, rapsheet, "fine")) and not isResultValid(crime, rapsheet, "probation")
 
 def isFelony(crime, rapsheet):
     return crime.crime_type == "Felony"
@@ -174,7 +178,7 @@ class RuleSet:
 
         messages = []
 
-        
+
         current_node = self.start_node
         while current_node != None and len(self.graph[current_node]) > 0:
             current_message = current_node.message
@@ -336,12 +340,31 @@ class RuleSet:
         self.graph = graph
 
 
-c = Crime("Felony", "Prison", None, None, "487", "Not Completed", "Theft")
-given = Rapsheet(
-[
-    c
-])
+# c = Crime("Felony", "Prison", None, None, "487", "Not Completed", "Theft")
+# given = Rapsheet(
+# [
+#     c
+# ])
 
-rs = RuleSet()
-g = rs.createGraph()
-print(rs.evaluate(c, given))
+# rs = RuleSet()
+# g = rs.createGraph()
+# rs.evaluate(c, given)
+
+if __name__ == "__main__":
+    d = {}
+    d["fine"] = True
+    d["jail"] = "jailss"
+    d["probation"] = "probss"
+    t = "Misdemeanor"
+    date = datetime(2007, 6, 6);
+    c = Crime(t, d, date, "12500(A)", None, None, None)
+
+    date = datetime(2007, 4, 3);
+    c2 = Crime(t, d, date, ":CNT:002 12500(A)", None, None, None)
+
+    r = Rapsheet([c, c2])
+
+    rs = RuleSet()
+    rs.createGraph()
+    res = rs.resultsFromRapSheet(r)
+    print(res)
