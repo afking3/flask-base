@@ -9,7 +9,7 @@ import main2
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = set(['pdf'])
 
-app = create_app()
+app = create_app("production")
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
