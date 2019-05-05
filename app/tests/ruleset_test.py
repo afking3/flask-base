@@ -10,6 +10,11 @@ week_ago = now - datetime.timedelta(days=7)
 one_year_ago = now - relativedelta(years=1)
 two_years_ago = now - relativedelta(years=2)
 
+def createResultDict(fine = None, probation = None, jail = None):
+    return {"fine": fine, "probation": probation, "jail": jail}
+
+fine_yes = createResultDict(True)
+
 r = rs.RuleSet()
 
 
@@ -29,7 +34,7 @@ def assertResults(rapsheet, list_of_expected):
 def test_infraction_not_eligible():
     given = rs.Rapsheet(
         [
-            rs.Crime("Infraction", {"fine": True, "probation": "none", "jail": "none"},
+            rs.Crime("Infraction", fine_yes,
              week_ago, None, None, None)
         ])
     expected = [
@@ -42,7 +47,7 @@ def test_infraction_not_eligible():
 def test_infraction_mandatory():
     given = rs.Rapsheet(
         [
-            rs.Crime("Infraction", "Fine", two_years_ago, None, None, None)
+            rs.Crime("Infraction", fine_yes, two_years_ago, None, None, None)
         ])
     expected = [
         [[],  "Mandatory"]
@@ -53,8 +58,8 @@ def test_infraction_mandatory():
 def test_infraction_discretionary():
     given = rs.Rapsheet(
         [
-            rs.Crime("Infraction", "Fine", two_years_ago, None, None, None),
-            rs.Crime("Infraction", "Fine", week_ago, None, None, None)
+            rs.Crime("Infraction", fine_yes, two_years_ago, None, None, None),
+            rs.Crime("Infraction", fine_yes, week_ago, None, None, None)
         ])
     #Fix this test
     expected = [
@@ -68,7 +73,7 @@ def test_misdemeanor_discretionary():
     given = rs.Rapsheet(
         [
             rs.Crime("Misdemeanor", "Up To A Year In County Jail", two_years_ago, None, None, None),
-            rs.Crime("Infraction", "Fine", week_ago, None, None, None)
+            rs.Crime("Infraction", fine_yes, week_ago, None, None, None)
         ])
     expected = [
         [[], "Discretionary"],
