@@ -12,30 +12,6 @@ ALLOWED_EXTENSIONS = set(['pdf'])
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-crimes = [
-    {
-        "id": 1,
-        "expungement": "felony",
-        "name": "Tom",
-        "location": "Los Angeles",
-        "date": "2018-01-01"
-    },
-    {
-        "id": 2,
-        "expungement": "felony",
-        "name": "Jerry",
-        "location": "Los Angeles",
-        "date": "2018-02-02"
-    },
-    {
-        "id": 3,
-        "expungement": "infraction",
-        "name": "Spike",
-        "location": "Los Angeles",
-        "date": "2018-03-03"
-    }
-]
-
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -49,16 +25,6 @@ def index():
 @app.route('/<page>')
 def next(page):
     return  render_template(page)
-
-# @app.route('/')
-# @app.route('/index')
-# def index():
-#     user = {'username': 'Miguel'}
-#     return render_template('index.html', title='Home', user=user)
-
-# @app.route('/review/<filename>', methods=['GET', 'POST'])
-# def review(filename):
-#     return render_template("step2.html", data=crimes, back=url_for('show', filename=filename), next=url_for('download', filename=filename))
 
 @app.route('/download/<filename>')
 def download(filename):
