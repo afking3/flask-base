@@ -1,2 +1,2 @@
-web: gunicorn manage:app/app
-worker: python upload.py
+web: gunicorn manage:app
+worker: python app/ipload.pu
