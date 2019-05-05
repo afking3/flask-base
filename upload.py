@@ -88,6 +88,11 @@ def show(filename):
     return render_template('step1.html', reupload="/upload/", back="/", next = url_for('download', filename=filename), filename=filename)
 
 
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                          'favicon.ico',mimetype='image/vnd.microsoft.icon')
+
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
     print(filename)
