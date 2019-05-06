@@ -1,15 +1,9 @@
-from flask import Blueprint, render_template
 import os
 import json
 import flask
 from flask import Flask, flash, request, redirect, url_for, render_template, send_from_directory, make_response, send_file
 from werkzeug.utils import secure_filename
 import main2
-from app.models import EditableHTML
-
-main = Blueprint('main', __name__)
-
-
 
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = set(['pdf'])
@@ -22,17 +16,16 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@main.route('/')
+@app.route('/')
 def index():
-    print("accessed")
     return  render_template("index.html", link="/upload/")
 
 
-@main.route('/<page>')
+@app.route('/<page>')
 def next(page):
     return  render_template(page)
 
-@main.route('/download/<filename>')
+@app.route('/download/<filename>')
 def download(filename):
     # x = main2.getTestInput()
     x = main2.getOutputFromRapsheet(filename)
@@ -41,13 +34,13 @@ def download(filename):
     excel = main2.createExcelSheet(output, "output.xls", "output/")
     return render_template("step3.html", data=output, back=url_for('show', filename=filename), next=url_for('download', filename=filename))
 
-@main.route('/return-files/')
+@app.route('/return-files/')
 def download_excel():
     return send_file('output/output.xls',
                      attachment_filename='output.xls',
                      as_attachment=True)
 
-@main.route('/upload/', methods=['GET', 'POST'])
+@app.route('/upload/', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
         # check if the post request has the file part
@@ -69,7 +62,7 @@ def upload_file():
 
 
 
-@main.route('/show/<filename>', methods=['GET', 'POST'])
+@app.route('/show/<filename>', methods=['GET', 'POST'])
 def show(filename):
 #     filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
 #     print(os.listdir(app.config['UPLOAD_FOLDER']))
@@ -94,17 +87,23 @@ def show(filename):
     return render_template('step1.html', reupload="/upload/", back="/", next = url_for('download', filename=filename), filename=filename)
 
 
-@main.route('/favicon.ico')
+@app.route('/favicon.ico')
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'),
                           'favicon.ico',mimetype='image/vnd.microsoft.icon')
 
-@main.route('/uploads/<filename>')
+@app.route('/uploads/<filename>')
 def uploaded_file(filename):
     print(filename)
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
-# @main.route('/show/<filename>')
+# @app.route('/show/<filename>')
 # def uploaded_file(filename):
 #     print()
 #     filename = UPLOAD_FOLDER + filename
 #     return render_template('step1.html', filename=filename)
+
+if __name__== "__main__":
+	# db.create_all() #do only once
+    app.secret_key = b'486995feb1ce1b4d2e282a6b31cb3bfbd90ef8ce33713783'    
+    app.config['SESSION_TYPE'] = 'filesystem'
+    app.run(debug=False)
