@@ -1,2 +1,2 @@
-web: gunicorn manage:app
-worker: python -u manage.py run_worker
+web: gunicorn 'app:app'
+worker: python app/app.py
