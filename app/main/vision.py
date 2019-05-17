@@ -3,10 +3,10 @@ import os
 import json
 import re
 import time
-from rapsheet import VRapsheet, VCrime
-from ruleset import Rapsheet, Crime
-import file_handling
-import word_similarity
+from app.main.rapsheet import VRapsheet, VCrime
+from app.main.ruleset import Rapsheet, Crime
+from app.main import file_handling
+from app.main import word_similarity
 from google.oauth2 import service_account
 from google.cloud import vision
 

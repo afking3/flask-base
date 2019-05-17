@@ -1,6 +1,6 @@
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
-from messages import *
+from app.main.messages import *
 
 class Rapsheet():
     def __init__(self, crimes = []):

@@ -1,5 +1,5 @@
-import ruleset as rs
-import vision
+from app.main import ruleset as rs
+from app.main import vision
 import xlwt
 from xlwt import Workbook
 
