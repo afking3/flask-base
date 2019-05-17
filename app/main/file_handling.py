@@ -18,7 +18,7 @@ def _open_single_image(filename):
 Opens a PDF and converts to a list of PIL images.
 """
 def _open_pdf(filename):
-    
+    print(filename)
     imgs = pdf2image.convert_from_path("app/main/uploads/"+filename)
     map((lambda i: i.convert), imgs)
     return imgs
