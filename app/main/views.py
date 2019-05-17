@@ -4,7 +4,7 @@ import json
 import flask
 from flask import Flask, flash, request, redirect, url_for, render_template, send_from_directory, make_response, send_file
 from werkzeug.utils import secure_filename
-import app.main main2
+from app.main import main2
 from app.models import EditableHTML
 
 
