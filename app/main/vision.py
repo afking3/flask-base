@@ -10,7 +10,7 @@ import word_similarity
 from google.oauth2 import service_account
 from google.cloud import vision
 
-CREDENTIALS = service_account.Credentials.from_service_account_file('google_vision/NLSLA Re-entry-88f1acf99097.json')
+CREDENTIALS = service_account.Credentials.from_service_account_file('app/main/google_vision/NLSLA Re-entry-88f1acf99097.json')
 
 CLIENT = vision.ImageAnnotatorClient(credentials=CREDENTIALS)
 

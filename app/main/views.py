@@ -7,16 +7,19 @@ from werkzeug.utils import secure_filename
 import main2
 from app.models import EditableHTML
 
+
 main = Blueprint('main', __name__)
 
 
 
-UPLOAD_FOLDER = 'uploads'
+UPLOAD_FOLDER = 'app/main/uploads'
 ALLOWED_EXTENSIONS = set(['pdf'])
 
-app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
+@main.route('/about')
+def about():
+    editable_html_obj = EditableHTML.get_editable_html('about')
+    return render_template(
+        'main/about.html', editable_html_obj=editable_html_obj)
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -38,12 +41,12 @@ def download(filename):
     x = main2.getOutputFromRapsheet(filename)
     output = main2.formatOutput(x)
     print(output)
-    excel = main2.createExcelSheet(output, "output.xls", "output/")
-    return render_template("step3.html", data=output, back=url_for('show', filename=filename), next=url_for('download', filename=filename))
+    excel = main2.createExcelSheet(output, "output.xls", "app/main/output/")
+    return render_template("step3.html", data=output, back=url_for('main.show', filename=filename), next=url_for('main.download', filename=filename))
 
 @main.route('/return-files/')
 def download_excel():
-    return send_file('output/output.xls',
+    return send_file('app/main/output/output.xls',
                      attachment_filename='output.xls',
                      as_attachment=True)
 
@@ -62,8 +65,9 @@ def upload_file():
             return redirect(request.url)
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('show',
+            print(filename)
+            file.save(os.path.join("app/main/uploads", filename))
+            return redirect(url_for('main.show',
                                     filename=filename))
     return render_template('upload.html', back="/")
 
@@ -87,22 +91,24 @@ def show(filename):
             return redirect(request.url)
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('show',
+            file.save(os.path.join("app/main/uploads/", filename))
+            return redirect(url_for('main.show',
                                     filename=filename))
 
-    return render_template('step1.html', reupload="/upload/", back="/", next = url_for('download', filename=filename), filename=filename)
+    return render_template('step1.html', reupload="/upload/", back="/", next = url_for('main.download', filename=filename), filename=filename)
 
 
 @main.route('/favicon.ico')
 def favicon():
-    return send_from_directory(os.path.join(app.root_path, 'static'),
+    return send_from_directory(os.path.join("/", 'static'),
                           'favicon.ico',mimetype='image/vnd.microsoft.icon')
 
 @main.route('/uploads/<filename>')
 def uploaded_file(filename):
+    print("***********")
     print(filename)
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+    print("***********")
+    return send_from_directory("app/main/uploads/", filename)
 # @main.route('/show/<filename>')
 # def uploaded_file(filename):
 #     print()

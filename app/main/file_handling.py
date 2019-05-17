@@ -19,7 +19,7 @@ Opens a PDF and converts to a list of PIL images.
 """
 def _open_pdf(filename):
     
-    imgs = pdf2image.convert_from_path("uploads/"+filename)
+    imgs = pdf2image.convert_from_path("app/main/uploads/"+filename)
     map((lambda i: i.convert), imgs)
     return imgs
 

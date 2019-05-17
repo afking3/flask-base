@@ -1,2 +1,2 @@
-web: gunicorn 'app:create_app("place_holder")'
-worker: python app/app.py
+web: gunicorn manage:app
+worker: python -u manage.py run_worker

@@ -14,4 +14,3 @@ dist
 .idea
 dump.rdb
 .vscode/
-__pycache__

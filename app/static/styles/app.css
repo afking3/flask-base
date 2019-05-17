@@ -1,0 +1,25 @@
+/* line 7 */
+nav {
+  margin-bottom: 40px !important;
+}
+
+/* line 12 */
+.ui.fixed.main.menu .right.menu > .item:last-of-type {
+  border-right: 1px solid rgba(34, 36, 38, 0.0980392);
+}
+
+/* line 18 */
+nav .mobile.only.row .ui.vertical.menu {
+  margin-top: 40px;
+  display: none;
+}
+
+/* line 25 */
+.flashes > .ui.message:last-of-type {
+  margin-bottom: 2rem;
+}
+
+/* line 30 */
+table.selectable tr:hover {
+  cursor: pointer !important;
+}

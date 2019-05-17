@@ -32,7 +32,7 @@
         $(".end-edit").click(function() {
             if ( CKEDITOR.instances[editorIDName] ) {
                 var json_data = {
-                    csrf_token: "{{ csrf_token() }}",
+                    csrf_token: "{{ '' }}",
                     editor_name: "{{ editable_html_obj.editor_name }}",
                     edit_data: CKEDITOR.instances[editorIDName].getData(),
                 };
