@@ -32,5 +32,6 @@
   ],
   "buildpacks": [
 
-  ]
+  ],
+  "stack":"heroku-18"
 }
