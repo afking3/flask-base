@@ -33,5 +33,5 @@
   "buildpacks": [
 
   ],
-  "stack":"heroku-18"
+  "stack":"heroku-16"
 }
