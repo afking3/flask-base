@@ -109,7 +109,7 @@ def uploaded_file(filename):
     print(filename)
     print("***********")
     print(os.listdir("app/main/uploads/"))
-    return send_from_directory("app/main/uploads/", filename)
+    return send_from_directory("app/main/uploads/", filename, as_attachment=True)
 # @main.route('/show/<filename>')
 # def uploaded_file(filename):
 #     print()
